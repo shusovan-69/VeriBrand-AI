@@ -1,7 +1,7 @@
 import os
 from typing import List
 from pydantic_settings import BaseSettings, SettingsConfigDict
-from pydantic import Field
+from pydantic import Field, model_validator
 
 
 class Settings(BaseSettings):
@@ -16,7 +16,8 @@ class Settings(BaseSettings):
     ALLOW_MOCK_DB: bool = False
 
     # Security
-    JWT_SECRET: str = "veribrand_dev_secret_key_production_grade_super_secure_2026"
+    # Security: Default to clearly-marked development placeholder
+    JWT_SECRET: str = "dev_insecure_jwt_secret_for_local_development_only"
     JWT_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 1440  # 24 hours
 
@@ -39,6 +40,20 @@ class Settings(BaseSettings):
         if not self.CORS_ORIGINS:
             return ["*"]
         return [origin.strip() for origin in self.CORS_ORIGINS.split(",") if origin.strip()]
+
+
+    @model_validator(mode="after")
+    def validate_security_in_production(self) -> "Settings":
+        env_lower = (self.ENVIRONMENT or "development").strip().lower()
+        if env_lower == "production":
+            jwt_sec = (self.JWT_SECRET or "").strip()
+            if "dev_" in jwt_sec.lower() or "insecure" in jwt_sec.lower() or len(jwt_sec) < 32:
+                raise ValueError(
+                    "CRITICAL PRODUCTION SECURITY ERROR: A secure, high-entropy JWT_SECRET (at least 32 characters) "
+                    "must be configured via environment variable when ENVIRONMENT is 'production'. "
+                    "Insecure development defaults are strictly blocked in production."
+                )
+        return self
 
     model_config = SettingsConfigDict(
         env_file=os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"),

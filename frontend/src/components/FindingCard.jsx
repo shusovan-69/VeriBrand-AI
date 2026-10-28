@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SeverityBadge, CategoryBadge, EvidenceStatusBadge } from './FindingBadge';
+import { SeverityBadge, CategoryBadge, EvidenceStatusBadge, EngineBadge } from './FindingBadge';
 import { BookOpen, Check, Copy, ArrowRight, CheckCircle2, FileQuestion, Sparkles } from 'lucide-react';
 import { verificationApi } from '../services/api';
 
@@ -52,6 +52,7 @@ export default function FindingCard({ finding, onResolvedChange, onApplySuggesti
         <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap' }}>
           <CategoryBadge category={finding.category} />
           <SeverityBadge severity={finding.severity} />
+          <EngineBadge isAi={finding.finding_id?.startsWith('FIND-AI')} uncertainty={finding.uncertainty} />
         </div>
         <EvidenceStatusBadge status={finding.evidence_status} />
       </div>

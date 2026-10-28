@@ -1,5 +1,44 @@
 import React from 'react';
-import { AlertTriangle, AlertOctagon, Info, ShieldAlert, CheckCircle, HelpCircle } from 'lucide-react';
+import { AlertTriangle, AlertOctagon, Info, ShieldAlert, CheckCircle, HelpCircle, Sparkles, Cpu } from 'lucide-react';
+
+export function EngineBadge({ isAi, uncertainty }) {
+  if (isAi || uncertainty) {
+    return (
+      <span style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '4px',
+        padding: '3px 8px',
+        borderRadius: '8px',
+        fontSize: '0.7rem',
+        fontWeight: 600,
+        background: 'rgba(168, 85, 247, 0.1)',
+        border: '1px solid rgba(168, 85, 247, 0.3)',
+        color: '#c084fc',
+      }}>
+        <Sparkles size={11} color="#c084fc" />
+        AI Qualitative
+      </span>
+    );
+  }
+  return (
+    <span style={{
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '4px',
+      padding: '3px 8px',
+      borderRadius: '8px',
+      fontSize: '0.7rem',
+      fontWeight: 600,
+      background: 'rgba(255, 101, 0, 0.08)',
+      border: '1px solid rgba(255, 101, 0, 0.25)',
+      color: '#FF8533',
+    }}>
+      <Cpu size={11} color="#FF6500" />
+      Deterministic Rule
+    </span>
+  );
+}
 
 export function SeverityBadge({ severity }) {
   const sev = (severity || 'medium').toLowerCase();

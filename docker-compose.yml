@@ -8,10 +8,10 @@ services:
     ports:
       - "8000:8000"
     environment:
-      - ENVIRONMENT=production
+      - ENVIRONMENT=${ENVIRONMENT:-development}
       - MONGODB_URI=mongodb://mongo:27017
       - MONGODB_DB_NAME=veribrand_db
-      - JWT_SECRET=production_super_secret_key_veribrand_2026
+      - JWT_SECRET=${JWT_SECRET:-dev_insecure_jwt_secret_for_local_docker_eval_only_change_in_production}
       - CORS_ORIGINS=http://localhost:5173,http://localhost:3000
     depends_on:
       - mongo
