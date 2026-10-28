@@ -8,7 +8,7 @@ from app.services.revision_insights_service import RevisionInsightsService
 from app.services.source_alert_service import SourceAlertService
 from app.services.image_service import ImageReviewService
 
-router = APIRouter(prefix="/insights", tags=["Round 3 MVP Improvements & Analytics"])
+router = APIRouter(prefix="/insights", tags=["Analytics & Revision Insights"])
 
 
 @router.get("/revisions/compare", response_model=Dict[str, Any])

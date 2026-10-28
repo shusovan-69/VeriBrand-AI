@@ -35,7 +35,7 @@ def extract_text_from_pdf(file_bytes: bytes, filename: str) -> Dict[str, Any]:
 
         # 3. Character length check
         if len(full_text) > settings.MAX_EXTRACTED_CHARS:
-            # We reject oversized text clearly instead of silently truncating per Round 1 specs
+            # We reject oversized text clearly instead of silently truncating per enterprise specification limits
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=f"Extracted content exceeds maximum character limit of {settings.MAX_EXTRACTED_CHARS} chars (found {len(full_text)} chars)."

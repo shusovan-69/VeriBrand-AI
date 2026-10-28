@@ -64,7 +64,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  // Quick 1-click credentials for hackathon judges & demo testing
+  // Pre-configured role credentials for quick workspace preview
   const quickLogin = async (role) => {
     const credentials = {
       admin: { email: 'admin@veribrand.ai', password: 'AdminPass123!' },

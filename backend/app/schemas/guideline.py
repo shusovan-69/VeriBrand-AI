@@ -71,3 +71,30 @@ class ApprovedFactResponse(BaseModel):
     effective_date: Optional[str] = None
     created_at: datetime
     updated_at: datetime
+
+
+class GuidelineBulkCreateRequest(BaseModel):
+    guidelines: List[GuidelineCreateRequest]
+
+
+class ApprovedFactBulkCreateRequest(BaseModel):
+    facts: List[ApprovedFactCreateRequest]
+
+
+class GuidelineStatsResponse(BaseModel):
+    total_guidelines: int
+    active_guidelines: int
+    inactive_guidelines: int
+    guidelines_by_category: dict[str, int]
+    guidelines_by_severity: dict[str, int]
+    total_facts: int
+    products_count: int
+    facts_by_attribute: dict[str, int]
+
+
+class GuidelineToggleResponse(BaseModel):
+    guideline_id: str
+    rule_id: str
+    is_active: bool
+    message: str
+

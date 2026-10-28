@@ -160,21 +160,29 @@ export default function GuidelinesPage() {
   );
 
   return (
-    <div className="space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+      <div style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: '16px',
+        paddingBottom: '20px',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.06)'
+      }}>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2.5">
-            <BookOpenCheck className="h-6 w-6 text-cyan-400" />
+          <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '10px', margin: 0 }}>
+            <BookOpenCheck size={24} color="#FF6500" />
             Approved Brand Guidelines & Verified Facts
           </h1>
-          <p className="text-xs text-slate-400 mt-1">
+          <p style={{ fontSize: '0.82rem', color: 'rgba(255, 255, 255, 0.45)', marginTop: '4px' }}>
             Ground truth sources cited by the verification engine. Every edit preserves version numbers (v1.0, v1.1).
           </p>
         </div>
 
         {isAdmin && (
-          <div className="flex items-center gap-2">
+          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             {activeTab === 'rules' ? (
               <button
                 onClick={() => {
@@ -184,9 +192,9 @@ export default function GuidelinesPage() {
                   setRuleReason('');
                   setShowRuleModal(true);
                 }}
-                className="px-3.5 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs flex items-center gap-1.5 shadow-md shadow-indigo-600/20 transition-all"
+                className="btn-orange"
               >
-                <Plus className="h-4 w-4" />
+                <Plus size={15} />
                 Add Guideline Rule
               </button>
             ) : (
@@ -198,9 +206,9 @@ export default function GuidelinesPage() {
                   setFactVal('');
                   setShowFactModal(true);
                 }}
-                className="px-3.5 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white font-medium text-xs flex items-center gap-1.5 shadow-md shadow-cyan-600/20 transition-all"
+                className="btn-orange"
               >
-                <Plus className="h-4 w-4" />
+                <Plus size={15} />
                 Add Approved Product Fact
               </button>
             )}
@@ -208,96 +216,150 @@ export default function GuidelinesPage() {
         )}
       </div>
 
-      {/* Navigation Tabs & Search */}
-      <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-        <div className="flex items-center bg-slate-900 border border-slate-800 p-1 rounded-xl">
+      {/* Tabs & Search Filter */}
+      <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '14px' }}>
+        <div style={{
+          display: 'flex',
+          background: '#111',
+          border: '1px solid rgba(255, 255, 255, 0.06)',
+          borderRadius: '12px',
+          padding: '4px',
+          gap: '4px'
+        }}>
           <button
             onClick={() => setActiveTab('rules')}
-            className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
-              activeTab === 'rules'
-                ? 'bg-indigo-600 text-white shadow-sm'
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
+            style={{
+              padding: '8px 16px',
+              borderRadius: '9px',
+              fontSize: '0.78rem',
+              fontWeight: 600,
+              cursor: 'pointer',
+              border: activeTab === 'rules' ? '1px solid rgba(255, 101, 0, 0.3)' : '1px solid transparent',
+              background: activeTab === 'rules' ? 'rgba(255, 101, 0, 0.15)' : 'transparent',
+              color: activeTab === 'rules' ? '#FF8533' : 'rgba(255, 255, 255, 0.5)',
+              transition: 'all 0.2s',
+            }}
           >
             Brand Terminology & Tone Rules ({guidelines.length})
           </button>
           <button
             onClick={() => setActiveTab('facts')}
-            className={`px-4 py-2 rounded-lg text-xs font-semibold transition-all ${
-              activeTab === 'facts'
-                ? 'bg-cyan-600 text-white shadow-sm'
-                : 'text-slate-400 hover:text-slate-200'
-            }`}
+            style={{
+              padding: '8px 16px',
+              borderRadius: '9px',
+              fontSize: '0.78rem',
+              fontWeight: 600,
+              cursor: 'pointer',
+              border: activeTab === 'facts' ? '1px solid rgba(255, 101, 0, 0.3)' : '1px solid transparent',
+              background: activeTab === 'facts' ? 'rgba(255, 101, 0, 0.15)' : 'transparent',
+              color: activeTab === 'facts' ? '#FF8533' : 'rgba(255, 255, 255, 0.5)',
+              transition: 'all 0.2s',
+            }}
           >
             Approved Product Facts ({facts.length})
           </button>
         </div>
 
-        <div className="relative w-full sm:w-64">
-          <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-slate-500" />
+        <div style={{ position: 'relative', width: '280px' }}>
+          <Search size={14} color="rgba(255,255,255,0.3)" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }} />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={`Search ${activeTab === 'rules' ? 'rules' : 'facts'}...`}
-            className="w-full pl-9 pr-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+            className="input-dark"
+            style={{ paddingLeft: '36px', fontSize: '0.78rem', padding: '8px 12px 8px 36px' }}
           />
         </div>
       </div>
 
       {/* Tab 1: Rules Table */}
       {activeTab === 'rules' && (
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/60 overflow-hidden shadow-sm">
+        <div className="card" style={{ overflow: 'hidden' }}>
           {loading ? (
-            <div className="py-12 text-center text-xs text-slate-400">Loading rules...</div>
+            <div style={{ padding: '60px 0', textAlign: 'center', fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.4)' }}>
+              Loading rules...
+            </div>
           ) : filteredRules.length === 0 ? (
-            <div className="py-12 text-center text-xs text-slate-400">No brand rules match search query.</div>
+            <div style={{ padding: '60px 0', textAlign: 'center', fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.4)' }}>
+              No brand rules match search query.
+            </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse text-xs">
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.82rem' }}>
                 <thead>
-                  <tr className="border-b border-slate-800 bg-slate-950/60 text-slate-400 text-[11px] font-semibold uppercase tracking-wider">
-                    <th className="py-3 px-4">Rule ID & Version</th>
-                    <th className="py-3 px-4">Category</th>
-                    <th className="py-3 px-4">Target Term / Phrase</th>
-                    <th className="py-3 px-4">Preferred Replacement</th>
-                    <th className="py-3 px-4">Reason / Standard</th>
-                    {isAdmin && <th className="py-3 px-4 text-right">Actions</th>}
+                  <tr style={{
+                    borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+                    background: 'rgba(0, 0, 0, 0.25)',
+                    fontSize: '0.7rem',
+                    fontWeight: 700,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.08em',
+                    color: 'rgba(255, 255, 255, 0.4)',
+                  }}>
+                    <th style={{ padding: '14px 18px' }}>Rule ID & Version</th>
+                    <th style={{ padding: '14px 18px' }}>Category</th>
+                    <th style={{ padding: '14px 18px' }}>Target Term / Phrase</th>
+                    <th style={{ padding: '14px 18px' }}>Preferred Replacement</th>
+                    <th style={{ padding: '14px 18px' }}>Reason / Standard</th>
+                    {isAdmin && <th style={{ padding: '14px 18px', textAlign: 'right' }}>Actions</th>}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800/80">
-                  {filteredRules.map((rule) => (
-                    <tr key={rule.guideline_id} className="hover:bg-slate-900/90 transition-colors">
-                      <td className="py-3.5 px-4 font-mono">
-                        <div className="font-bold text-slate-200">{rule.rule_id}</div>
-                        <span className="text-[10px] text-cyan-400 font-semibold">{rule.version_id}</span>
+                <tbody>
+                  {filteredRules.map((rule, idx) => (
+                    <tr
+                      key={rule.guideline_id}
+                      style={{
+                        borderBottom: idx < filteredRules.length - 1 ? '1px solid rgba(255, 255, 255, 0.04)' : 'none',
+                        transition: 'background 0.2s',
+                      }}
+                      onMouseOver={e => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)'}
+                      onMouseOut={e => e.currentTarget.style.background = 'transparent'}
+                    >
+                      <td style={{ padding: '14px 18px', fontFamily: 'monospace' }}>
+                        <div style={{ fontWeight: 700, color: '#fff' }}>{rule.rule_id}</div>
+                        <span style={{ fontSize: '0.7rem', color: '#FF8533', fontWeight: 600 }}>{rule.version_id}</span>
                       </td>
-                      <td className="py-3.5 px-4">
-                        <span className={`px-2 py-0.5 rounded text-[11px] font-medium border ${
-                          rule.category === 'prohibited_term'
-                            ? 'bg-rose-950/60 text-rose-300 border-rose-800/50'
-                            : 'bg-indigo-950/60 text-indigo-300 border-indigo-800/50'
-                        }`}>
+                      <td style={{ padding: '14px 18px' }}>
+                        <span style={{
+                          padding: '3px 8px',
+                          borderRadius: '6px',
+                          fontSize: '0.7rem',
+                          fontWeight: 600,
+                          background: rule.category === 'prohibited_term' ? 'rgba(239, 68, 68, 0.12)' : 'rgba(255, 101, 0, 0.12)',
+                          border: rule.category === 'prohibited_term' ? '1px solid rgba(239, 68, 68, 0.3)' : '1px solid rgba(255, 101, 0, 0.3)',
+                          color: rule.category === 'prohibited_term' ? '#f87171' : '#FF8533',
+                        }}>
                           {rule.category.replace('_', ' ')}
                         </span>
                       </td>
-                      <td className="py-3.5 px-4 font-semibold text-rose-300 font-mono">
+                      <td style={{ padding: '14px 18px', fontFamily: 'monospace', fontWeight: 700, color: '#f87171' }}>
                         "{rule.term_or_pattern}"
                       </td>
-                      <td className="py-3.5 px-4 text-emerald-300 font-mono">
+                      <td style={{ padding: '14px 18px', fontFamily: 'monospace', color: '#34d399' }}>
                         {rule.replacement ? `"${rule.replacement}"` : '— (Omit)'}
                       </td>
-                      <td className="py-3.5 px-4 text-slate-400 max-w-xs leading-relaxed">
+                      <td style={{ padding: '14px 18px', color: 'rgba(255, 255, 255, 0.65)', maxWidth: '320px', lineHeight: '1.4' }}>
                         {rule.reason}
                       </td>
                       {isAdmin && (
-                        <td className="py-3.5 px-4 text-right">
+                        <td style={{ padding: '14px 18px', textAlign: 'right' }}>
                           <button
                             onClick={() => openEditRule(rule)}
-                            className="p-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition-colors"
+                            style={{
+                              padding: '6px 10px',
+                              borderRadius: '8px',
+                              background: 'rgba(255, 255, 255, 0.04)',
+                              border: '1px solid rgba(255, 255, 255, 0.08)',
+                              color: 'rgba(255, 255, 255, 0.6)',
+                              cursor: 'pointer',
+                              transition: 'all 0.2s',
+                            }}
+                            onMouseOver={e => { e.currentTarget.style.borderColor = 'rgba(255,101,0,0.4)'; e.currentTarget.style.color = '#FF8533'; }}
+                            onMouseOut={e => { e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)'; e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)'; }}
                             title="Edit rule (bumps version)"
                           >
-                            <Edit2 className="h-3.5 w-3.5" />
+                            <Edit2 size={13} />
                           </button>
                         </td>
                       )}
@@ -312,55 +374,95 @@ export default function GuidelinesPage() {
 
       {/* Tab 2: Facts Table */}
       {activeTab === 'facts' && (
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/60 overflow-hidden shadow-sm">
+        <div className="card" style={{ overflow: 'hidden' }}>
           {loading ? (
-            <div className="py-12 text-center text-xs text-slate-400">Loading approved specifications...</div>
+            <div style={{ padding: '60px 0', textAlign: 'center', fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.4)' }}>
+              Loading approved specifications...
+            </div>
           ) : filteredFacts.length === 0 ? (
-            <div className="py-12 text-center text-xs text-slate-400">No approved specifications match search query.</div>
+            <div style={{ padding: '60px 0', textAlign: 'center', fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.4)' }}>
+              No approved specifications match search query.
+            </div>
           ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full text-left border-collapse text-xs">
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '0.82rem' }}>
                 <thead>
-                  <tr className="border-b border-slate-800 bg-slate-950/60 text-slate-400 text-[11px] font-semibold uppercase tracking-wider">
-                    <th className="py-3 px-4">Source ID & Version</th>
-                    <th className="py-3 px-4">Product Name</th>
-                    <th className="py-3 px-4">Attribute</th>
-                    <th className="py-3 px-4">Verified Specification Statement</th>
-                    <th className="py-3 px-4">Numerical Bound</th>
-                    {isAdmin && <th className="py-3 px-4 text-right">Actions</th>}
+                  <tr style={{
+                    borderBottom: '1px solid rgba(255, 255, 255, 0.06)',
+                    background: 'rgba(0, 0, 0, 0.25)',
+                    fontSize: '0.7rem',
+                    fontWeight: 700,
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.08em',
+                    color: 'rgba(255, 255, 255, 0.4)',
+                  }}>
+                    <th style={{ padding: '14px 18px' }}>Source ID & Version</th>
+                    <th style={{ padding: '14px 18px' }}>Product Name</th>
+                    <th style={{ padding: '14px 18px' }}>Attribute</th>
+                    <th style={{ padding: '14px 18px' }}>Verified Specification Statement</th>
+                    <th style={{ padding: '14px 18px' }}>Numerical Bound</th>
+                    {isAdmin && <th style={{ padding: '14px 18px', textAlign: 'right' }}>Actions</th>}
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-800/80">
-                  {filteredFacts.map((fact) => (
-                    <tr key={fact.fact_id} className="hover:bg-slate-900/90 transition-colors">
-                      <td className="py-3.5 px-4 font-mono">
-                        <div className="font-bold text-cyan-400">{fact.source_id}</div>
-                        <span className="text-[10px] text-slate-400 font-semibold">{fact.version_id}</span>
+                <tbody>
+                  {filteredFacts.map((fact, idx) => (
+                    <tr
+                      key={fact.fact_id}
+                      style={{
+                        borderBottom: idx < filteredFacts.length - 1 ? '1px solid rgba(255, 255, 255, 0.04)' : 'none',
+                        transition: 'background 0.2s',
+                      }}
+                      onMouseOver={e => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)'}
+                      onMouseOut={e => e.currentTarget.style.background = 'transparent'}
+                    >
+                      <td style={{ padding: '14px 18px', fontFamily: 'monospace' }}>
+                        <div style={{ fontWeight: 700, color: '#FF8533' }}>{fact.source_id}</div>
+                        <span style={{ fontSize: '0.7rem', color: 'rgba(255, 255, 255, 0.4)', fontWeight: 600 }}>{fact.version_id}</span>
                       </td>
-                      <td className="py-3.5 px-4 font-medium text-slate-200">
+                      <td style={{ padding: '14px 18px', fontWeight: 600, color: '#fff' }}>
                         {fact.product_name}
                       </td>
-                      <td className="py-3.5 px-4">
-                        <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300 font-mono text-[11px]">
+                      <td style={{ padding: '14px 18px' }}>
+                        <span style={{
+                          padding: '3px 8px',
+                          borderRadius: '6px',
+                          background: 'rgba(255, 255, 255, 0.04)',
+                          border: '1px solid rgba(255, 255, 255, 0.08)',
+                          color: 'rgba(255, 255, 255, 0.75)',
+                          fontFamily: 'monospace',
+                          fontSize: '0.72rem',
+                        }}>
                           {fact.attribute}
                         </span>
                       </td>
-                      <td className="py-3.5 px-4 text-slate-300 font-medium max-w-sm leading-relaxed">
+                      <td style={{ padding: '14px 18px', color: 'rgba(255, 255, 255, 0.8)', maxWidth: '340px', lineHeight: '1.4' }}>
                         "{fact.statement}"
                       </td>
-                      <td className="py-3.5 px-4 font-mono text-emerald-400">
+                      <td style={{ padding: '14px 18px', fontFamily: 'monospace', color: '#34d399' }}>
                         {fact.numerical_value !== null ? (
                           <span>{fact.numerical_comparator} {fact.numerical_value} {fact.numerical_unit}</span>
-                        ) : 'Qualitative'}
+                        ) : (
+                          <span style={{ color: 'rgba(255, 255, 255, 0.4)' }}>Qualitative</span>
+                        )}
                       </td>
                       {isAdmin && (
-                        <td className="py-3.5 px-4 text-right">
+                        <td style={{ padding: '14px 18px', textAlign: 'right' }}>
                           <button
                             onClick={() => openEditFact(fact)}
-                            className="p-1.5 rounded-lg bg-slate-800 text-slate-300 hover:text-white hover:bg-slate-700 transition-colors"
+                            style={{
+                              padding: '6px 10px',
+                              borderRadius: '8px',
+                              background: 'rgba(255, 255, 255, 0.04)',
+                              border: '1px solid rgba(255, 255, 255, 0.08)',
+                              color: 'rgba(255, 255, 255, 0.6)',
+                              cursor: 'pointer',
+                              transition: 'all 0.2s',
+                            }}
+                            onMouseOver={e => { e.currentTarget.style.borderColor = 'rgba(255,101,0,0.4)'; e.currentTarget.style.color = '#FF8533'; }}
+                            onMouseOut={e => { e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.08)'; e.currentTarget.style.color = 'rgba(255, 255, 255, 0.6)'; }}
                             title="Edit specification (bumps version and triggers source-change alerts)"
                           >
-                            <Edit2 className="h-3.5 w-3.5" />
+                            <Edit2 size={13} />
                           </button>
                         </td>
                       )}
@@ -375,90 +477,102 @@ export default function GuidelinesPage() {
 
       {/* Modal: Add / Edit Rule */}
       {showRuleModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-          <div className="w-full max-w-lg rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-2xl">
-            <h3 className="text-base font-bold text-white mb-1">
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 999,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '20px',
+          background: 'rgba(0, 0, 0, 0.8)',
+          backdropFilter: 'blur(8px)',
+        }}>
+          <div className="card" style={{ width: '100%', maxWidth: '520px', padding: '28px', border: '1px solid rgba(255, 101, 0, 0.3)' }}>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff', margin: 0 }}>
               {editingItem ? `Edit Brand Rule (${editingItem.rule_id})` : 'Create Brand Guideline Rule'}
             </h3>
-            <p className="text-xs text-slate-400 mb-4">
+            <p style={{ fontSize: '0.78rem', color: 'rgba(255, 255, 255, 0.45)', margin: '6px 0 20px 0' }}>
               {editingItem ? 'Saving modifications will bump the version (e.g. v1.1) and alert historical citations.' : 'Define terminology and brand tone principles enforced by the verification engine.'}
             </p>
 
-            <form onSubmit={handleSaveRule} className="space-y-4 text-xs">
+            <form onSubmit={handleSaveRule} style={{ display: 'flex', flexDirection: 'column', gap: '14px', fontSize: '0.8rem' }}>
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Category</label>
+                <label style={{ display: 'block', color: 'rgba(255, 255, 255, 0.6)', fontWeight: 600, marginBottom: '6px' }}>Category</label>
                 <select
                   value={ruleCategory}
                   onChange={(e) => setRuleCategory(e.target.value)}
-                  className="w-full p-2 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                  className="input-dark"
+                  style={{ cursor: 'pointer' }}
                 >
-                  <option value="prohibited_term">Prohibited Term (Breach)</option>
-                  <option value="preferred_term">Preferred Terminology (Recommendation)</option>
-                  <option value="prohibited_claim">Prohibited Promotional Claim</option>
-                  <option value="tone_principle">Tone Principle</option>
+                  <option value="prohibited_term" style={{ background: '#161616', color: '#fff' }}>Prohibited Term (Breach)</option>
+                  <option value="preferred_term" style={{ background: '#161616', color: '#fff' }}>Preferred Terminology (Recommendation)</option>
+                  <option value="prohibited_claim" style={{ background: '#161616', color: '#fff' }}>Prohibited Promotional Claim</option>
+                  <option value="tone_principle" style={{ background: '#161616', color: '#fff' }}>Tone Principle</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Target Term / Phrase</label>
+                <label style={{ display: 'block', color: 'rgba(255, 255, 255, 0.6)', fontWeight: 600, marginBottom: '6px' }}>Target Term / Phrase</label>
                 <input
                   type="text"
                   required
                   value={ruleTerm}
                   onChange={(e) => setRuleTerm(e.target.value)}
                   placeholder="e.g. AI proof, revolutionary miracle"
-                  className="w-full p-2 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                  className="input-dark"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Preferred Replacement (Optional)</label>
+                <label style={{ display: 'block', color: 'rgba(255, 255, 255, 0.6)', fontWeight: 600, marginBottom: '6px' }}>Preferred Replacement (Optional)</label>
                 <input
                   type="text"
                   value={ruleReplacement}
                   onChange={(e) => setRuleReplacement(e.target.value)}
                   placeholder="e.g. evidence-first brand governance"
-                  className="w-full p-2 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                  className="input-dark"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Reason / Standard</label>
+                <label style={{ display: 'block', color: 'rgba(255, 255, 255, 0.6)', fontWeight: 600, marginBottom: '6px' }}>Reason / Standard</label>
                 <textarea
                   required
                   rows={3}
                   value={ruleReason}
                   onChange={(e) => setRuleReason(e.target.value)}
                   placeholder="Why this rule exists (e.g. FTC substantiation guidance forbids absolute guarantee claims)."
-                  className="w-full p-2 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                  className="input-dark"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Severity</label>
+                <label style={{ display: 'block', color: 'rgba(255, 255, 255, 0.6)', fontWeight: 600, marginBottom: '6px' }}>Severity</label>
                 <select
                   value={ruleSeverity}
                   onChange={(e) => setRuleSeverity(e.target.value)}
-                  className="w-full p-2 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                  className="input-dark"
+                  style={{ cursor: 'pointer' }}
                 >
-                  <option value="critical">Critical (Blocks approval without explicit override)</option>
-                  <option value="high">High</option>
-                  <option value="medium">Medium</option>
-                  <option value="low">Low</option>
+                  <option value="critical" style={{ background: '#161616', color: '#fff' }}>Critical (Blocks approval without override)</option>
+                  <option value="high" style={{ background: '#161616', color: '#fff' }}>High</option>
+                  <option value="medium" style={{ background: '#161616', color: '#fff' }}>Medium</option>
+                  <option value="low" style={{ background: '#161616', color: '#fff' }}>Low</option>
                 </select>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '10px', paddingTop: '14px', borderTop: '1px solid rgba(255, 255, 255, 0.06)' }}>
                 <button
                   type="button"
                   onClick={() => setShowRuleModal(false)}
-                  className="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 hover:text-white text-xs"
+                  className="btn-ghost"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs shadow-md shadow-indigo-600/30"
+                  className="btn-orange"
                 >
                   {editingItem ? 'Update Rule & Bump Version' : 'Save Brand Rule'}
                 </button>
@@ -470,102 +584,114 @@ export default function GuidelinesPage() {
 
       {/* Modal: Add / Edit Product Fact */}
       {showFactModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-          <div className="w-full max-w-lg rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-2xl">
-            <h3 className="text-base font-bold text-white mb-1">
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 999,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '20px',
+          background: 'rgba(0, 0, 0, 0.8)',
+          backdropFilter: 'blur(8px)',
+        }}>
+          <div className="card" style={{ width: '100%', maxWidth: '520px', padding: '28px', border: '1px solid rgba(255, 101, 0, 0.3)' }}>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff', margin: 0 }}>
               {editingItem ? `Edit Product Fact (${editingItem.source_id})` : 'Add Verified Product Specification'}
             </h3>
-            <p className="text-xs text-slate-400 mb-4">
+            <p style={{ fontSize: '0.78rem', color: 'rgba(255, 255, 255, 0.45)', margin: '6px 0 20px 0' }}>
               Ground truth specification for factual verification and numerical claims comparison.
             </p>
 
-            <form onSubmit={handleSaveFact} className="space-y-4 text-xs">
+            <form onSubmit={handleSaveFact} style={{ display: 'flex', flexDirection: 'column', gap: '14px', fontSize: '0.8rem' }}>
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Product Name</label>
+                <label style={{ display: 'block', color: 'rgba(255, 255, 255, 0.6)', fontWeight: 600, marginBottom: '6px' }}>Product Name</label>
                 <input
                   type="text"
                   required
                   value={factProduct}
                   onChange={(e) => setFactProduct(e.target.value)}
                   placeholder="e.g. Example Wireless Headphones"
-                  className="w-full p-2 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                  className="input-dark"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Attribute</label>
+                <label style={{ display: 'block', color: 'rgba(255, 255, 255, 0.6)', fontWeight: 600, marginBottom: '6px' }}>Attribute</label>
                 <select
                   value={factAttr}
                   onChange={(e) => setFactAttr(e.target.value)}
-                  className="w-full p-2 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                  className="input-dark"
+                  style={{ cursor: 'pointer' }}
                 >
-                  <option value="battery_life">battery_life</option>
-                  <option value="water_resistance">water_resistance</option>
-                  <option value="warranty">warranty</option>
-                  <option value="storage">storage</option>
-                  <option value="general_specification">general_specification</option>
+                  <option value="battery_life" style={{ background: '#161616', color: '#fff' }}>battery_life</option>
+                  <option value="water_resistance" style={{ background: '#161616', color: '#fff' }}>water_resistance</option>
+                  <option value="warranty" style={{ background: '#161616', color: '#fff' }}>warranty</option>
+                  <option value="storage" style={{ background: '#161616', color: '#fff' }}>storage</option>
+                  <option value="general_specification" style={{ background: '#161616', color: '#fff' }}>general_specification</option>
                 </select>
               </div>
 
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Verified Statement</label>
+                <label style={{ display: 'block', color: 'rgba(255, 255, 255, 0.6)', fontWeight: 600, marginBottom: '6px' }}>Verified Statement</label>
                 <textarea
                   required
                   rows={2}
                   value={factStatement}
                   onChange={(e) => setFactStatement(e.target.value)}
                   placeholder="e.g. Battery life: up to 12 hours under standard testing conditions."
-                  className="w-full p-2 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                  className="input-dark"
                 />
               </div>
 
-              <div className="grid grid-cols-3 gap-2">
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px' }}>
                 <div>
-                  <label className="block text-slate-300 font-medium mb-1">Comparator</label>
+                  <label style={{ display: 'block', color: 'rgba(255, 255, 255, 0.6)', fontWeight: 600, marginBottom: '6px' }}>Comparator</label>
                   <select
                     value={factComparator}
                     onChange={(e) => setFactComparator(e.target.value)}
-                    className="w-full p-2 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                    className="input-dark"
+                    style={{ cursor: 'pointer' }}
                   >
-                    <option value="up_to">Up to (Max bound)</option>
-                    <option value="exact">Exact match</option>
-                    <option value="min">Minimum bound</option>
+                    <option value="up_to" style={{ background: '#161616', color: '#fff' }}>Up to (Max bound)</option>
+                    <option value="exact" style={{ background: '#161616', color: '#fff' }}>Exact match</option>
+                    <option value="min" style={{ background: '#161616', color: '#fff' }}>Minimum bound</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-slate-300 font-medium mb-1">Numerical Value</label>
+                  <label style={{ display: 'block', color: 'rgba(255, 255, 255, 0.6)', fontWeight: 600, marginBottom: '6px' }}>Numerical Value</label>
                   <input
                     type="number"
                     step="any"
                     value={factVal}
                     onChange={(e) => setFactVal(e.target.value)}
                     placeholder="e.g. 12"
-                    className="w-full p-2 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                    className="input-dark"
                   />
                 </div>
                 <div>
-                  <label className="block text-slate-300 font-medium mb-1">Unit</label>
+                  <label style={{ display: 'block', color: 'rgba(255, 255, 255, 0.6)', fontWeight: 600, marginBottom: '6px' }}>Unit</label>
                   <input
                     type="text"
                     value={factUnit}
                     onChange={(e) => setFactUnit(e.target.value)}
                     placeholder="e.g. hours"
-                    className="w-full p-2 rounded-lg bg-slate-950 border border-slate-700 text-white"
+                    className="input-dark"
                   />
                 </div>
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '10px', paddingTop: '14px', borderTop: '1px solid rgba(255, 255, 255, 0.06)' }}>
                 <button
                   type="button"
                   onClick={() => setShowFactModal(false)}
-                  className="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 hover:text-white text-xs"
+                  className="btn-ghost"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-4 py-2 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-xs shadow-md shadow-cyan-600/30"
+                  className="btn-orange"
                 >
                   {editingItem ? 'Update Fact & Alert Citations' : 'Save Approved Fact'}
                 </button>

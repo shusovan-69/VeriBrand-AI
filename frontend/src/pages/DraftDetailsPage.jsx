@@ -90,7 +90,6 @@ export default function DraftDetailsPage() {
         content_text: revisionText,
         submission_type: 'text'
       });
-      // Automatically run verification on the new revision
       await verificationApi.verifyDraft(draftId);
       setIsRevising(false);
       await fetchDraftData();
@@ -105,7 +104,6 @@ export default function DraftDetailsPage() {
     if (!isRevising) {
       setIsRevising(true);
     }
-    // Replace text in revision editor
     setRevisionText((prev) => {
       if (prev.includes(orig)) {
         return prev.replace(orig, suggested);
@@ -143,8 +141,8 @@ export default function DraftDetailsPage() {
 
   if (loading) {
     return (
-      <div className="py-24 text-center text-xs text-slate-400">
-        <div className="h-6 w-6 border-2 border-indigo-500 border-t-transparent rounded-full animate-spin mx-auto mb-3" />
+      <div style={{ padding: '80px 0', textAlign: 'center', fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.4)' }}>
+        <div style={{ width: '28px', height: '28px', border: '3px solid rgba(255,101,0,0.3)', borderTopColor: '#FF6500', borderRadius: '50%', margin: '0 auto 12px' }} className="animate-spin" />
         Loading draft verification details...
       </div>
     );
@@ -152,7 +150,7 @@ export default function DraftDetailsPage() {
 
   if (!draft) {
     return (
-      <div className="py-24 text-center text-xs text-slate-400">
+      <div style={{ padding: '80px 0', textAlign: 'center', fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.4)' }}>
         Draft not found in this workspace.
       </div>
     );
@@ -164,64 +162,97 @@ export default function DraftDetailsPage() {
   const unresolvedHigh = findings.filter(f => f.severity === 'high' && !f.is_resolved);
   const requiresOverride = (unresolvedCritical.length > 0 || unresolvedHigh.length > 0);
 
-  const getStatusBadge = (status) => {
+  const getStatusBadgeStyle = (status) => {
     switch (status) {
       case 'approved':
-        return 'bg-emerald-950/80 text-emerald-300 border-emerald-600/60 shadow-sm shadow-emerald-900/30';
+        return { bg: 'rgba(16, 185, 129, 0.12)', border: '1px solid rgba(16, 185, 129, 0.35)', color: '#34d399', label: 'READY TO PUBLISH' };
       case 'under_review':
-        return 'bg-indigo-950/80 text-cyan-300 border-indigo-600/50';
+        return { bg: 'rgba(255, 101, 0, 0.12)', border: '1px solid rgba(255, 101, 0, 0.35)', color: '#FF8533', label: 'UNDER REVIEW' };
       case 'changes_requested':
-        return 'bg-rose-950/80 text-rose-300 border-rose-600/50';
+        return { bg: 'rgba(239, 68, 68, 0.12)', border: '1px solid rgba(239, 68, 68, 0.35)', color: '#f87171', label: 'CHANGES REQUESTED' };
       default:
-        return 'bg-amber-950/80 text-amber-300 border-amber-600/50';
+        return { bg: 'rgba(245, 158, 11, 0.12)', border: '1px solid rgba(245, 158, 11, 0.35)', color: '#fbbf24', label: status?.toUpperCase() || 'DRAFT' };
     }
   };
 
+  const statusBadge = getStatusBadgeStyle(draft.status);
+
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
+    <div style={{ maxWidth: '1200px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '24px' }}>
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+      <div style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: '16px',
+        paddingBottom: '20px',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.06)'
+      }}>
         <div>
-          <div className="flex items-center gap-3">
-            <h1 className="text-2xl font-bold tracking-tight text-white">{draft.title}</h1>
-            <span className={`px-2.5 py-1 rounded-full text-xs font-semibold border ${getStatusBadge(draft.status)}`}>
-              {draft.status === 'approved' ? 'READY TO PUBLISH' : draft.status.replace('_', ' ').toUpperCase()}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+            <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#fff', margin: 0 }}>
+              {draft.title}
+            </h1>
+            <span style={{
+              padding: '4px 12px',
+              borderRadius: '999px',
+              fontSize: '0.72rem',
+              fontWeight: 700,
+              letterSpacing: '0.04em',
+              background: statusBadge.bg,
+              border: statusBadge.border,
+              color: statusBadge.color,
+            }}>
+              {statusBadge.label}
             </span>
           </div>
-          <div className="flex flex-wrap items-center gap-3 mt-1.5 text-xs text-slate-400">
-            <span>Target: <strong className="text-slate-200">{draft.target_product || 'General'}</strong></span>
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px', marginTop: '6px', fontSize: '0.78rem', color: 'rgba(255, 255, 255, 0.45)' }}>
+            <span>Target: <strong style={{ color: '#fff' }}>{draft.target_product || 'General'}</strong></span>
             <span>·</span>
-            <span>Audience: <strong className="text-slate-200">{draft.target_audience}</strong></span>
+            <span>Audience: <strong style={{ color: '#fff' }}>{draft.target_audience}</strong></span>
             <span>·</span>
-            <span>Creator: <strong className="text-slate-200">{draft.creator_name || 'Creator'}</strong></span>
+            <span>Creator: <strong style={{ color: '#fff' }}>{draft.creator_name || 'Creator'}</strong></span>
             <span>·</span>
-            <span>Draft ID: <strong className="text-slate-400 font-mono">{draft.draft_id}</strong></span>
+            <span>Draft ID: <strong style={{ color: '#FF8533', fontFamily: 'monospace' }}>{draft.draft_id}</strong></span>
           </div>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
           <button
             onClick={handleReverify}
             disabled={reverifying}
-            className="px-3 py-2 rounded-lg bg-slate-900 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white text-xs font-medium flex items-center gap-1.5 transition-all"
+            className="btn-ghost"
+            style={{ padding: '8px 14px', fontSize: '0.8rem' }}
             title="Re-run verification engine against active sources"
           >
-            <RefreshCw className={`h-3.5 w-3.5 ${reverifying ? 'animate-spin text-cyan-400' : ''}`} />
+            <RefreshCw size={14} className={reverifying ? 'animate-spin' : ''} style={{ color: reverifying ? '#FF6500' : 'inherit' }} />
             Re-verify
           </button>
 
           {isReviewerOrAdmin && (
-            <div className="flex items-center gap-2">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <button
                 onClick={() => handleOpenDecision('changes_requested')}
-                className="px-3.5 py-2 rounded-lg bg-rose-950/60 hover:bg-rose-900/70 text-rose-200 border border-rose-800/60 text-xs font-semibold transition-all"
+                style={{
+                  padding: '9px 16px',
+                  borderRadius: '12px',
+                  background: 'rgba(239, 68, 68, 0.12)',
+                  border: '1px solid rgba(239, 68, 68, 0.3)',
+                  color: '#f87171',
+                  fontWeight: 600,
+                  fontSize: '0.8rem',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s',
+                }}
               >
                 Request Changes
               </button>
               <button
                 onClick={() => handleOpenDecision('approved')}
                 disabled={isCreatorOfDraft}
-                className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold shadow-md shadow-emerald-600/30 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
+                className="btn-orange"
+                style={{ padding: '9px 18px', fontSize: '0.8rem' }}
                 title={isCreatorOfDraft ? "Separation of duties: Creators cannot approve their own drafts." : "Approve and mark Ready to Publish"}
               >
                 Approve Draft
@@ -233,34 +264,67 @@ export default function DraftDetailsPage() {
 
       {/* Ready to Publish Success Banner */}
       {draft.ready_to_publish && (
-        <div className="rounded-xl border border-emerald-500/50 bg-emerald-950/20 p-4 shadow-sm flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <CheckCircle className="h-6 w-6 text-emerald-400 shrink-0" />
+        <div style={{
+          background: 'rgba(16, 185, 129, 0.08)',
+          border: '1px solid rgba(16, 185, 129, 0.3)',
+          borderRadius: '16px',
+          padding: '16px 20px',
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '14px',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+            <div style={{ width: '38px', height: '38px', borderRadius: '10px', background: 'rgba(16, 185, 129, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <CheckCircle size={20} color="#34d399" />
+            </div>
             <div>
-              <h4 className="text-sm font-bold text-emerald-300">
+              <h4 style={{ fontSize: '0.9rem', fontWeight: 700, color: '#34d399', margin: 0 }}>
                 Ready to Publish — Formal Brand Approval Granted
               </h4>
-              <p className="text-xs text-slate-300 mt-0.5">
-                This content satisfies verified specifications and brand governance policies. Approved revision snapshot is permanently recorded.
+              <p style={{ fontSize: '0.78rem', color: 'rgba(255, 255, 255, 0.65)', margin: '4px 0 0 0' }}>
+                This content satisfies verified specifications and brand governance policies. Approved snapshot permanently preserved.
               </p>
             </div>
           </div>
-          <span className="px-3 py-1 rounded bg-emerald-900/60 text-emerald-300 border border-emerald-700/60 text-xs font-mono font-semibold">
+          <span style={{
+            padding: '4px 12px',
+            borderRadius: '8px',
+            background: 'rgba(16, 185, 129, 0.15)',
+            border: '1px solid rgba(16, 185, 129, 0.3)',
+            color: '#34d399',
+            fontFamily: 'monospace',
+            fontSize: '0.75rem',
+            fontWeight: 700,
+          }}>
             Status: READY_TO_PUBLISH
           </span>
         </div>
       )}
 
-      {/* Self-Approval Warning if Creator is Viewing */}
+      {/* Self-Approval Warning */}
       {isCreatorOfDraft && draft.status !== 'approved' && (
-        <div className="rounded-xl border border-indigo-900/40 bg-indigo-950/20 p-3 text-xs text-indigo-300 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <Lock className="h-4 w-4 text-cyan-400" />
+        <div style={{
+          background: 'rgba(255, 101, 0, 0.06)',
+          border: '1px solid rgba(255, 101, 0, 0.2)',
+          borderRadius: '14px',
+          padding: '12px 18px',
+          display: 'flex',
+          flexWrap: 'wrap',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '12px',
+          fontSize: '0.8rem',
+        }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#FF8533' }}>
+            <Lock size={15} />
             <span>You submitted this draft. Under brand governance separation of concerns, another team member (Reviewer or Admin) must approve it.</span>
           </div>
           <button
             onClick={() => setIsRevising(!isRevising)}
-            className="px-3 py-1 rounded bg-indigo-600 hover:bg-indigo-500 text-white font-medium text-xs transition-all"
+            className="btn-orange"
+            style={{ padding: '6px 14px', fontSize: '0.75rem' }}
           >
             {isRevising ? 'Close Revision Editor' : 'Edit & Submit Revision'}
           </button>
@@ -268,103 +332,133 @@ export default function DraftDetailsPage() {
       )}
 
       {/* Main Grid: Content Viewer & Verification Findings */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Left Column: Content & Revision Editor (5 cols) */}
-        <div className="lg:col-span-5 space-y-4">
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-5 shadow-sm">
-            <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-800">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
-                <FileText className="h-4 w-4 text-cyan-400" />
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '20px' }}>
+        {/* Left Column: Content & Revision History (5 cols) */}
+        <div style={{ gridColumn: 'span 5', display: 'flex', flexDirection: 'column', gap: '18px' }}>
+          <div className="card" style={{ padding: '22px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '14px', paddingBottom: '12px', borderBottom: '1px solid rgba(255, 255, 255, 0.06)' }}>
+              <span style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(255, 255, 255, 0.4)', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <FileText size={15} color="#FF6500" />
                 Submitted Marketing Copy
               </span>
-              <span className="text-xs font-mono text-slate-400">
+              <span style={{ fontSize: '0.75rem', fontFamily: 'monospace', color: '#FF8533', fontWeight: 600 }}>
                 Revision #{history?.revisions?.length || 1}
               </span>
             </div>
 
-            {/* Content Display */}
             {!isRevising ? (
               <div>
-                <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 font-mono text-xs text-slate-200 leading-relaxed whitespace-pre-wrap min-h-40">
+                <div style={{
+                  padding: '16px',
+                  borderRadius: '12px',
+                  background: '#0d0d0d',
+                  border: '1px solid rgba(255, 255, 255, 0.05)',
+                  fontFamily: 'monospace',
+                  fontSize: '0.82rem',
+                  color: 'rgba(255, 255, 255, 0.85)',
+                  lineHeight: '1.6',
+                  whiteSpace: 'pre-wrap',
+                  minHeight: '140px',
+                }}>
                   {draft.latest_content_text}
                 </div>
-                <div className="mt-3 flex items-center justify-between">
-                  <span className="text-[11px] text-slate-400">
-                    Hash: <strong className="font-mono text-slate-300">{history?.revisions?.[history.revisions.length - 1]?.content_hash?.slice(0, 12)}...</strong>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginTop: '12px' }}>
+                  <span style={{ fontSize: '0.72rem', color: 'rgba(255, 255, 255, 0.35)' }}>
+                    Hash: <strong style={{ fontFamily: 'monospace', color: 'rgba(255, 255, 255, 0.6)' }}>{history?.revisions?.[history.revisions.length - 1]?.content_hash?.slice(0, 12)}...</strong>
                   </span>
                   <button
                     onClick={() => {
                       setRevisionText(draft.latest_content_text);
                       setIsRevising(true);
                     }}
-                    className="text-xs text-cyan-400 hover:text-cyan-300 font-medium flex items-center gap-1"
+                    style={{
+                      background: 'transparent',
+                      border: 'none',
+                      color: '#FF8533',
+                      fontSize: '0.78rem',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px',
+                    }}
                   >
-                    <Edit3 className="h-3.5 w-3.5" />
+                    <Edit3 size={13} />
                     Edit & Revise
                   </button>
                 </div>
               </div>
             ) : (
-              /* Inline Revision Editor */
-              <form onSubmit={handleSubmitRevision} className="space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-semibold text-cyan-300">
+              <form onSubmit={handleSubmitRevision} style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#FF8533' }}>
                     Create Revision #{((history?.revisions?.length) || 1) + 1}
                   </span>
                   <button
                     type="button"
                     onClick={() => setIsRevising(false)}
-                    className="text-[11px] text-slate-400 hover:text-white"
+                    style={{ background: 'transparent', border: 'none', color: 'rgba(255, 255, 255, 0.4)', fontSize: '0.75rem', cursor: 'pointer' }}
                   >
                     Cancel
                   </button>
                 </div>
 
                 <textarea
-                  rows={6}
+                  rows={7}
                   required
                   value={revisionText}
                   onChange={(e) => setRevisionText(e.target.value)}
                   placeholder="Apply suggested corrections and revise marketing copy..."
-                  className="w-full p-3 rounded-xl bg-slate-950 border border-indigo-700/60 font-mono text-xs text-white leading-relaxed focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                  className="input-dark"
+                  style={{ fontFamily: 'monospace', lineHeight: '1.6', resize: 'vertical' }}
                 />
 
-                <div className="flex items-center justify-between">
-                  <span className="text-[11px] text-slate-400">
-                    Submitting creates an immutable revision and re-analyzes claims.
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ fontSize: '0.7rem', color: 'rgba(255, 255, 255, 0.4)' }}>
+                    Re-analyzes claims upon submission.
                   </span>
                   <button
                     type="submit"
                     disabled={submittingRev}
-                    className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-indigo-600 to-cyan-500 hover:from-indigo-500 hover:to-cyan-400 text-white font-semibold text-xs shadow-md shadow-indigo-600/30 flex items-center gap-1.5 disabled:opacity-50"
+                    className="btn-orange"
+                    style={{ padding: '8px 16px', fontSize: '0.78rem' }}
                   >
                     {submittingRev ? 'Re-analyzing...' : 'Submit Revision'}
-                    <Send className="h-3 w-3" />
+                    <Send size={13} />
                   </button>
                 </div>
               </form>
             )}
           </div>
 
-          {/* Revision History Log */}
+          {/* Revision Progression */}
           {history?.revisions && history.revisions.length > 1 && (
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-4">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2 flex items-center gap-1.5">
-                <GitBranch className="h-3.5 w-3.5 text-cyan-400" />
+            <div className="card" style={{ padding: '20px' }}>
+              <h4 style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(255, 255, 255, 0.4)', marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                <GitBranch size={14} color="#FF6500" />
                 Revision Progression ({history.revisions.length} Revisions)
               </h4>
-              <div className="space-y-2">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 {history.revisions.map((rev) => (
-                  <div key={rev.revision_id} className="p-2.5 rounded-lg bg-slate-950/70 border border-slate-800 text-xs flex items-center justify-between">
+                  <div key={rev.revision_id} style={{
+                    padding: '10px 14px',
+                    borderRadius: '10px',
+                    background: 'rgba(0, 0, 0, 0.25)',
+                    border: '1px solid rgba(255, 255, 255, 0.05)',
+                    fontSize: '0.78rem',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}>
                     <div>
-                      <strong className="text-slate-200">Revision #{rev.revision_number}</strong>
-                      <span className="text-[10px] text-slate-400 ml-2">
+                      <strong style={{ color: '#fff' }}>Revision #{rev.revision_number}</strong>
+                      <span style={{ fontSize: '0.7rem', color: 'rgba(255, 255, 255, 0.35)', marginLeft: '8px' }}>
                         {new Date(rev.created_at).toLocaleString([], { dateStyle: 'short', timeStyle: 'short' })}
                       </span>
                     </div>
                     <Link
                       to={`/insights?draft_id=${draftId}&base_rev=${history.revisions[0].revision_id}&new_rev=${rev.revision_id}`}
-                      className="text-[11px] text-cyan-400 hover:text-cyan-300 font-medium"
+                      style={{ fontSize: '0.75rem', color: '#FF8533', textDecoration: 'none', fontWeight: 600 }}
                     >
                       Compare Diff →
                     </Link>
@@ -374,28 +468,38 @@ export default function DraftDetailsPage() {
             </div>
           )}
 
-          {/* Historical Decisions Card */}
+          {/* Recorded Decisions */}
           {history?.decisions && history.decisions.length > 0 && (
-            <div className="rounded-2xl border border-slate-800 bg-slate-900/50 p-4">
-              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-2">
+            <div className="card" style={{ padding: '20px' }}>
+              <h4 style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(255, 255, 255, 0.4)', marginBottom: '12px' }}>
                 Recorded Review Decisions
               </h4>
-              <div className="space-y-2">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 {history.decisions.map((dec) => (
-                  <div key={dec.decision_id} className="p-3 rounded-lg bg-slate-950/80 border border-slate-800 text-xs">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className={`font-semibold capitalize ${dec.decision === 'approved' ? 'text-emerald-400' : 'text-rose-400'}`}>
+                  <div key={dec.decision_id} style={{
+                    padding: '12px 14px',
+                    borderRadius: '10px',
+                    background: 'rgba(0, 0, 0, 0.25)',
+                    border: '1px solid rgba(255, 255, 255, 0.05)',
+                    fontSize: '0.78rem',
+                  }}>
+                    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '4px' }}>
+                      <span style={{
+                        fontWeight: 700,
+                        color: dec.decision === 'approved' ? '#34d399' : '#f87171',
+                        textTransform: 'capitalize',
+                      }}>
                         {dec.decision === 'approved' ? 'Approved' : 'Changes Requested'}
                       </span>
-                      <span className="text-[10px] text-slate-400">
+                      <span style={{ fontSize: '0.7rem', color: 'rgba(255, 255, 255, 0.4)' }}>
                         By {dec.reviewer_name}
                       </span>
                     </div>
                     {dec.comment && (
-                      <p className="text-slate-300 italic">"{dec.comment}"</p>
+                      <p style={{ color: 'rgba(255, 255, 255, 0.75)', fontStyle: 'italic', margin: '4px 0 0 0' }}>"{dec.comment}"</p>
                     )}
                     {dec.override_reason && (
-                      <p className="text-amber-300 text-[11px] mt-1 border-t border-slate-800 pt-1">
+                      <p style={{ color: '#fbbf24', fontSize: '0.72rem', marginTop: '6px', paddingTop: '6px', borderTop: '1px solid rgba(255, 255, 255, 0.06)' }}>
                         Override Justification: {dec.override_reason}
                       </p>
                     )}
@@ -407,47 +511,60 @@ export default function DraftDetailsPage() {
         </div>
 
         {/* Right Column: Verification Findings (7 cols) */}
-        <div className="lg:col-span-7 space-y-4">
-          <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-5 shadow-sm">
-            <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-800">
+        <div style={{ gridColumn: 'span 7', display: 'flex', flexDirection: 'column', gap: '18px' }}>
+          <div className="card" style={{ padding: '24px' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '12px', marginBottom: '18px', paddingBottom: '14px', borderBottom: '1px solid rgba(255, 255, 255, 0.06)' }}>
               <div>
-                <h3 className="text-base font-bold text-white flex items-center gap-2">
-                  <ShieldCheck className="h-5 w-5 text-cyan-400" />
+                <h3 style={{ fontSize: '1rem', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}>
+                  <ShieldCheck size={20} color="#FF6500" />
                   Verification Engine Findings
                 </h3>
-                <p className="text-xs text-slate-400">
+                <p style={{ fontSize: '0.78rem', color: 'rgba(255, 255, 255, 0.4)', marginTop: '2px' }}>
                   {findings.length === 0
                     ? 'No discrepancies detected. Draft is fully compliant.'
                     : `${findings.length} issue${findings.length > 1 ? 's' : ''} identified against approved brand specifications.`}
                 </p>
               </div>
 
-              {/* Status summary pill */}
-              <span className={`px-2.5 py-1 rounded-full text-xs font-bold border ${
-                findings.length === 0
-                  ? 'bg-emerald-950/80 text-emerald-300 border-emerald-600/50'
-                  : requiresOverride
-                  ? 'bg-rose-950/80 text-rose-300 border-rose-600/60'
-                  : 'bg-amber-950/80 text-amber-300 border-amber-600/50'
-              }`}>
+              <span style={{
+                padding: '4px 12px',
+                borderRadius: '999px',
+                fontSize: '0.7rem',
+                fontWeight: 700,
+                letterSpacing: '0.04em',
+                background: findings.length === 0 ? 'rgba(16, 185, 129, 0.12)' : requiresOverride ? 'rgba(239, 68, 68, 0.12)' : 'rgba(255, 101, 0, 0.12)',
+                border: findings.length === 0 ? '1px solid rgba(16, 185, 129, 0.3)' : requiresOverride ? '1px solid rgba(239, 68, 68, 0.3)' : '1px solid rgba(255, 101, 0, 0.3)',
+                color: findings.length === 0 ? '#34d399' : requiresOverride ? '#f87171' : '#FF8533',
+              }}>
                 {findings.length === 0 ? 'CLEAN / COMPLIANT' : requiresOverride ? 'REQUIRES OVERRIDE' : 'FLAGGED'}
               </span>
             </div>
 
             {/* Severities Tally */}
             {findings.length > 0 && (
-              <div className="flex flex-wrap items-center gap-2 mb-4 p-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs">
-                <span className="text-slate-400 font-medium">Issue Severity:</span>
-                <span className="px-2 py-0.5 rounded bg-rose-950 text-rose-300 border border-rose-800 font-mono text-[11px]">
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                flexWrap: 'wrap',
+                marginBottom: '18px',
+                padding: '10px 14px',
+                borderRadius: '12px',
+                background: 'rgba(0, 0, 0, 0.25)',
+                border: '1px solid rgba(255, 255, 255, 0.05)',
+                fontSize: '0.75rem',
+              }}>
+                <span style={{ color: 'rgba(255, 255, 255, 0.4)', fontWeight: 600 }}>Issue Severity:</span>
+                <span style={{ padding: '2px 8px', borderRadius: '6px', background: 'rgba(239, 68, 68, 0.12)', border: '1px solid rgba(239, 68, 68, 0.3)', color: '#f87171', fontFamily: 'monospace', fontWeight: 700 }}>
                   {findings.filter(f => f.severity === 'critical').length} Critical
                 </span>
-                <span className="px-2 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800 font-mono text-[11px]">
+                <span style={{ padding: '2px 8px', borderRadius: '6px', background: 'rgba(255, 101, 0, 0.12)', border: '1px solid rgba(255, 101, 0, 0.3)', color: '#FF8533', fontFamily: 'monospace', fontWeight: 700 }}>
                   {findings.filter(f => f.severity === 'high').length} High
                 </span>
-                <span className="px-2 py-0.5 rounded bg-yellow-950 text-yellow-300 border border-yellow-800 font-mono text-[11px]">
+                <span style={{ padding: '2px 8px', borderRadius: '6px', background: 'rgba(245, 158, 11, 0.12)', border: '1px solid rgba(245, 158, 11, 0.3)', color: '#fbbf24', fontFamily: 'monospace', fontWeight: 700 }}>
                   {findings.filter(f => f.severity === 'medium').length} Medium
                 </span>
-                <span className="px-2 py-0.5 rounded bg-slate-800 text-slate-300 border border-slate-700 font-mono text-[11px]">
+                <span style={{ padding: '2px 8px', borderRadius: '6px', background: 'rgba(255, 255, 255, 0.05)', border: '1px solid rgba(255, 255, 255, 0.1)', color: 'rgba(255, 255, 255, 0.6)', fontFamily: 'monospace', fontWeight: 700 }}>
                   {findings.filter(f => f.severity === 'low' || f.severity === 'info').length} Low/Info
                 </span>
               </div>
@@ -455,13 +572,15 @@ export default function DraftDetailsPage() {
 
             {/* List of Findings */}
             {findings.length === 0 ? (
-              <div className="py-12 text-center text-xs text-slate-400">
-                <CheckCircle className="h-8 w-8 text-emerald-400 mx-auto mb-2 opacity-80" />
-                <p className="font-semibold text-slate-200">100% Brand Verification Pass</p>
-                <p className="mt-1">All claims, numbers, and terminology match approved sources.</p>
+              <div style={{ padding: '60px 0', textAlign: 'center' }}>
+                <CheckCircle size={36} color="#34d399" style={{ margin: '0 auto 10px', opacity: 0.8 }} />
+                <p style={{ fontWeight: 700, color: '#fff', fontSize: '0.95rem', margin: 0 }}>100% Brand Verification Pass</p>
+                <p style={{ fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.4)', marginTop: '4px' }}>
+                  All claims, numbers, and terminology match approved sources.
+                </p>
               </div>
             ) : (
-              <div className="space-y-4">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}>
                 {findings.map((finding) => (
                   <FindingCard
                     key={finding.finding_id}
@@ -478,100 +597,135 @@ export default function DraftDetailsPage() {
 
       {/* Reviewer Decision Modal */}
       {showDecisionModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
-          <div className="w-full max-w-lg rounded-2xl border border-slate-800 bg-slate-900 p-6 shadow-2xl">
-            <h3 className="text-base font-bold text-white mb-1">
+        <div style={{
+          position: 'fixed',
+          inset: 0,
+          zIndex: 999,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          padding: '20px',
+          background: 'rgba(0, 0, 0, 0.8)',
+          backdropFilter: 'blur(8px)',
+        }}>
+          <div className="card" style={{ width: '100%', maxWidth: '520px', padding: '28px', border: '1px solid rgba(255, 101, 0, 0.3)' }}>
+            <h3 style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff', margin: 0 }}>
               Record Reviewer Decision
             </h3>
-            <p className="text-xs text-slate-400 mb-4">
+            <p style={{ fontSize: '0.78rem', color: 'rgba(255, 255, 255, 0.45)', margin: '6px 0 18px 0' }}>
               Your decision, comments, and cited source snapshot will be permanently recorded in the immutable audit trail.
             </p>
 
             {decisionError && (
-              <div className="mb-4 rounded-lg bg-rose-950/60 border border-rose-800 p-3 text-xs text-rose-300">
+              <div style={{
+                marginBottom: '14px',
+                padding: '10px 14px',
+                borderRadius: '10px',
+                background: 'rgba(239, 68, 68, 0.1)',
+                border: '1px solid rgba(239, 68, 68, 0.25)',
+                color: '#f87171',
+                fontSize: '0.78rem',
+              }}>
                 {decisionError}
               </div>
             )}
 
-            <form onSubmit={handleSubmitDecision} className="space-y-4 text-xs">
+            <form onSubmit={handleSubmitDecision} style={{ display: 'flex', flexDirection: 'column', gap: '14px', fontSize: '0.8rem' }}>
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Decision Action</label>
-                <div className="grid grid-cols-2 gap-2">
+                <label style={{ display: 'block', color: 'rgba(255, 255, 255, 0.6)', fontWeight: 600, marginBottom: '6px' }}>Decision Action</label>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px' }}>
                   <button
                     type="button"
                     onClick={() => setDecisionType('approved')}
-                    className={`py-2 px-3 rounded-lg border font-semibold text-xs transition-all ${
-                      decisionType === 'approved'
-                        ? 'bg-emerald-600 text-white border-emerald-500 shadow-sm'
-                        : 'bg-slate-950 text-slate-400 border-slate-800'
-                    }`}
+                    style={{
+                      padding: '10px',
+                      borderRadius: '10px',
+                      fontWeight: 700,
+                      fontSize: '0.78rem',
+                      cursor: 'pointer',
+                      border: decisionType === 'approved' ? '1px solid #10b981' : '1px solid rgba(255, 255, 255, 0.08)',
+                      background: decisionType === 'approved' ? 'rgba(16, 185, 129, 0.2)' : 'rgba(255, 255, 255, 0.03)',
+                      color: decisionType === 'approved' ? '#34d399' : 'rgba(255, 255, 255, 0.5)',
+                      transition: 'all 0.2s',
+                    }}
                   >
                     Approve Content
                   </button>
                   <button
                     type="button"
                     onClick={() => setDecisionType('changes_requested')}
-                    className={`py-2 px-3 rounded-lg border font-semibold text-xs transition-all ${
-                      decisionType === 'changes_requested'
-                        ? 'bg-rose-600 text-white border-rose-500 shadow-sm'
-                        : 'bg-slate-950 text-slate-400 border-slate-800'
-                    }`}
+                    style={{
+                      padding: '10px',
+                      borderRadius: '10px',
+                      fontWeight: 700,
+                      fontSize: '0.78rem',
+                      cursor: 'pointer',
+                      border: decisionType === 'changes_requested' ? '1px solid #ef4444' : '1px solid rgba(255, 255, 255, 0.08)',
+                      background: decisionType === 'changes_requested' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(255, 255, 255, 0.03)',
+                      color: decisionType === 'changes_requested' ? '#f87171' : 'rgba(255, 255, 255, 0.5)',
+                      transition: 'all 0.2s',
+                    }}
                   >
                     Request Changes
                   </button>
                 </div>
               </div>
 
-              {/* Explicit Override Reason required if critical/high issues unresolved */}
               {decisionType === 'approved' && requiresOverride && (
-                <div className="rounded-xl bg-amber-950/30 border border-amber-800/60 p-3 space-y-2">
-                  <div className="flex items-start gap-2 text-amber-300">
-                    <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5 text-amber-400" />
-                    <div>
-                      <strong className="block font-semibold">Override Reason Required</strong>
-                      <span className="text-[11px] text-amber-300/80">
-                        This draft contains {unresolvedCritical.length + unresolvedHigh.length} unresolved critical/high findings. You must document a formal justification to approve.
-                      </span>
-                    </div>
+                <div style={{
+                  padding: '12px 14px',
+                  borderRadius: '12px',
+                  background: 'rgba(255, 101, 0, 0.08)',
+                  border: '1px solid rgba(255, 101, 0, 0.25)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px',
+                }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#FF8533' }}>
+                    <AlertTriangle size={16} />
+                    <strong style={{ fontSize: '0.82rem' }}>Override Reason Required</strong>
                   </div>
+                  <span style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.65)' }}>
+                    This draft contains {unresolvedCritical.length + unresolvedHigh.length} unresolved critical/high findings. You must document a formal justification to approve.
+                  </span>
                   <textarea
                     required
                     rows={3}
                     value={overrideReason}
                     onChange={(e) => setOverrideReason(e.target.value)}
                     placeholder="Document legal, executive, or test justification for approving content with unresolved findings..."
-                    className="w-full p-2.5 rounded-lg bg-slate-950 border border-amber-700/60 text-white placeholder-slate-500 text-xs"
+                    className="input-dark"
                   />
                 </div>
               )}
 
               <div>
-                <label className="block text-slate-300 font-medium mb-1">Reviewer Comment / Feedback</label>
+                <label style={{ display: 'block', color: 'rgba(255, 255, 255, 0.6)', fontWeight: 600, marginBottom: '6px' }}>Reviewer Comment / Feedback</label>
                 <textarea
                   rows={3}
                   value={decisionComment}
                   onChange={(e) => setDecisionComment(e.target.value)}
                   placeholder="Provide feedback for content creator or release notes..."
-                  className="w-full p-2.5 rounded-lg bg-slate-950 border border-slate-700 text-white placeholder-slate-500 text-xs"
+                  className="input-dark"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', gap: '10px', paddingTop: '14px', borderTop: '1px solid rgba(255, 255, 255, 0.06)' }}>
                 <button
                   type="button"
                   onClick={() => setShowDecisionModal(false)}
-                  className="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 hover:text-white"
+                  className="btn-ghost"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={submittingDecision}
-                  className={`px-4 py-2 rounded-lg font-semibold text-white text-xs shadow-md ${
-                    decisionType === 'approved'
-                      ? 'bg-emerald-600 hover:bg-emerald-500 shadow-emerald-600/30'
-                      : 'bg-rose-600 hover:bg-rose-500 shadow-rose-600/30'
-                  }`}
+                  className="btn-orange"
+                  style={{
+                    background: decisionType === 'approved' ? '#10b981' : '#ef4444',
+                    boxShadow: decisionType === 'approved' ? '0 0 20px rgba(16,185,129,0.3)' : '0 0 20px rgba(239,68,68,0.3)',
+                  }}
                 >
                   {submittingDecision ? 'Submitting...' : `Confirm ${decisionType === 'approved' ? 'Approval' : 'Changes Request'}`}
                 </button>

@@ -1,17 +1,50 @@
-# Environments
-venv/
+# Environment & Secrets
 .env
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.pytest_cache/
+.env.*
+!.env.example
+backend/.env
+frontend/.env
+**/.env
+**/.env.*
+!**/.env.example
 
-# Node
+# Python & Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.pytest_cache/
+.coverage
+htmlcov/
+*.egg-info/
+dist/
+build/
+
+# Node & Frontend Build
 node_modules/
 frontend/node_modules/
 frontend/dist/
-.DS_Store
+frontend/.vite/
+.vite/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
 
-# Logs
+# System & IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Logs & Temporary Files
 *.log
+logs/
+tmp/
+temp/

@@ -23,22 +23,22 @@ export default function ActivityHistoryPage() {
     fetchActivity();
   }, []);
 
-  const getActionBadge = (action) => {
+  const getActionBadgeStyle = (action) => {
     switch (action) {
       case 'draft_approved':
-        return 'bg-emerald-950/80 text-emerald-300 border-emerald-600/50';
+        return { bg: 'rgba(16, 185, 129, 0.12)', border: 'rgba(16, 185, 129, 0.3)', color: '#34d399' };
       case 'changes_requested':
-        return 'bg-rose-950/80 text-rose-300 border-rose-600/50';
+        return { bg: 'rgba(239, 68, 68, 0.12)', border: 'rgba(239, 68, 68, 0.3)', color: '#f87171' };
       case 'verification_completed':
-        return 'bg-cyan-950/80 text-cyan-300 border-cyan-600/50';
+        return { bg: 'rgba(255, 101, 0, 0.12)', border: 'rgba(255, 101, 0, 0.3)', color: '#FF8533' };
       case 'draft_submitted':
       case 'revision_submitted':
-        return 'bg-indigo-950/80 text-indigo-300 border-indigo-600/50';
+        return { bg: 'rgba(168, 85, 247, 0.12)', border: 'rgba(168, 85, 247, 0.3)', color: '#c084fc' };
       case 'guideline_updated':
       case 'approved_fact_updated':
-        return 'bg-amber-950/80 text-amber-300 border-amber-600/50';
+        return { bg: 'rgba(245, 158, 11, 0.12)', border: 'rgba(245, 158, 11, 0.3)', color: '#fbbf24' };
       default:
-        return 'bg-slate-800 text-slate-300 border-slate-700';
+        return { bg: 'rgba(255, 255, 255, 0.05)', border: 'rgba(255, 255, 255, 0.1)', color: 'rgba(255, 255, 255, 0.6)' };
     }
   };
 
@@ -49,15 +49,23 @@ export default function ActivityHistoryPage() {
   );
 
   return (
-    <div className="space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+      <div style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: '16px',
+        paddingBottom: '20px',
+        borderBottom: '1px solid rgba(255, 255, 255, 0.06)'
+      }}>
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2.5">
-            <History className="h-6 w-6 text-indigo-400" />
+          <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '10px', margin: 0 }}>
+            <History size={24} color="#FF6500" />
             Workspace Audit Trail & Activity Log
           </h1>
-          <p className="text-xs text-slate-400 mt-1">
+          <p style={{ fontSize: '0.82rem', color: 'rgba(255, 255, 255, 0.45)', marginTop: '4px' }}>
             Immutable log of all user registrations, content submissions, verification runs, and reviewer decisions.
           </p>
         </div>
@@ -65,56 +73,91 @@ export default function ActivityHistoryPage() {
         <button
           onClick={fetchActivity}
           disabled={loading}
-          className="p-2 rounded-lg bg-slate-900 border border-slate-800 text-slate-300 hover:text-white transition-colors self-start sm:self-auto"
+          className="btn-ghost"
+          style={{ padding: '8px 12px' }}
           title="Refresh audit events"
         >
-          <RefreshCw className={`h-4 w-4 ${loading ? 'animate-spin' : ''}`} />
+          <RefreshCw size={15} className={loading ? 'animate-spin' : ''} />
         </button>
       </div>
 
-      {/* Search Input */}
-      <div className="relative max-w-sm">
-        <Search className="absolute left-3 top-2.5 h-3.5 w-3.5 text-slate-500" />
+      {/* Search Bar */}
+      <div style={{ position: 'relative', maxWidth: '360px' }}>
+        <Search size={14} color="rgba(255,255,255,0.3)" style={{ position: 'absolute', left: '12px', top: '50%', transform: 'translateY(-50%)' }} />
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Filter audit events by actor or description..."
-          className="w-full pl-9 pr-3 py-1.5 rounded-lg bg-slate-900 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+          className="input-dark"
+          style={{ paddingLeft: '36px', fontSize: '0.8rem', padding: '9px 12px 9px 36px' }}
         />
       </div>
 
-      {/* Events List */}
-      <div className="rounded-2xl border border-slate-800 bg-slate-900/60 overflow-hidden shadow-sm">
+      {/* Events Card */}
+      <div className="card" style={{ overflow: 'hidden' }}>
         {loading ? (
-          <div className="py-16 text-center text-xs text-slate-400">Loading audit events...</div>
+          <div style={{ padding: '60px 0', textAlign: 'center', fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.4)' }}>
+            Loading audit events...
+          </div>
         ) : filteredEvents.length === 0 ? (
-          <div className="py-16 text-center text-xs text-slate-400">No events found matching your query.</div>
+          <div style={{ padding: '60px 0', textAlign: 'center', fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.4)' }}>
+            No events found matching your query.
+          </div>
         ) : (
-          <div className="divide-y divide-slate-800/80">
-            {filteredEvents.map((evt) => (
-              <div key={evt.event_id} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-900/90 transition-colors">
-                <div className="space-y-1">
-                  <div className="flex items-center gap-2">
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-semibold uppercase border ${getActionBadge(evt.action)}`}>
-                      {evt.action.replace('_', ' ')}
-                    </span>
-                    <span className="text-xs text-slate-400">by</span>
-                    <strong className="text-xs text-slate-200">{evt.actor_name}</strong>
+          <div style={{ display: 'flex', flexDirection: 'column' }}>
+            {filteredEvents.map((evt, idx) => {
+              const bStyle = getActionBadgeStyle(evt.action);
+              return (
+                <div
+                  key={evt.event_id}
+                  style={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '16px 20px',
+                    borderBottom: idx < filteredEvents.length - 1 ? '1px solid rgba(255, 255, 255, 0.04)' : 'none',
+                    gap: '14px',
+                    transition: 'background 0.2s',
+                  }}
+                  onMouseOver={e => e.currentTarget.style.background = 'rgba(255, 255, 255, 0.02)'}
+                  onMouseOut={e => e.currentTarget.style.background = 'transparent'}
+                >
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '5px', flex: 1, minWidth: '240px' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <span style={{
+                        padding: '2px 8px',
+                        borderRadius: '6px',
+                        fontSize: '0.68rem',
+                        fontFamily: 'monospace',
+                        fontWeight: 700,
+                        textTransform: 'uppercase',
+                        background: bStyle.bg,
+                        border: `1px solid ${bStyle.border}`,
+                        color: bStyle.color,
+                      }}>
+                        {evt.action.replace('_', ' ')}
+                      </span>
+                      <span style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.4)' }}>by</span>
+                      <strong style={{ fontSize: '0.78rem', color: '#fff' }}>{evt.actor_name}</strong>
+                    </div>
+                    <p style={{ fontSize: '0.82rem', color: 'rgba(255, 255, 255, 0.75)', margin: 0, lineHeight: '1.4' }}>
+                      {evt.details}
+                    </p>
                   </div>
-                  <p className="text-xs text-slate-300 leading-relaxed font-sans">{evt.details}</p>
-                </div>
 
-                <div className="shrink-0 text-left sm:text-right">
-                  <span className="text-[11px] font-mono text-slate-400 block">
-                    {new Date(evt.created_at).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}
-                  </span>
-                  <span className="text-[10px] font-mono text-slate-500">
-                    {new Date(evt.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
-                  </span>
+                  <div style={{ textAlign: 'right', flexShrink: 0 }}>
+                    <span style={{ display: 'block', fontSize: '0.75rem', fontFamily: 'monospace', color: 'rgba(255, 255, 255, 0.4)' }}>
+                      {new Date(evt.created_at).toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' })}
+                    </span>
+                    <span style={{ display: 'block', fontSize: '0.7rem', fontFamily: 'monospace', color: 'rgba(255, 255, 255, 0.25)', marginTop: '2px' }}>
+                      {new Date(evt.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
+                    </span>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
       </div>

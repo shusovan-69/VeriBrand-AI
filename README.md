@@ -1,16 +1,15 @@
 # VeriBrand AI — Evidence-First Brand Governance Platform
 
-> **We Code Coders Hackathon — Round 2: The Build**  
-> **Team Leader:** Shusovan Dutta (`shusovandutta153@gmail.com`)  
-> **Team Members:** Shusovan Dutta, Debojit Pore, Swastik Baur, Soumodip Mondal  
-> **Problem Provider:** Inkloom AI | **Deadline:** 28 October 2026, 10:00 AM IST  
+> **Enterprise Brand Governance & Pre-Publication Compliance Platform**  
+> **Developer:** Shusovan Dutta (`shusovandutta153@gmail.com`)  
+> **Architecture:** Distributed Hybrid Verification Engine (FastAPI + React + MongoDB)
 
 [![Python](https://img.shields.io/badge/Python-3.11%20%7C%203.14-blue.svg)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.110+-009688.svg)](https://fastapi.tiangolo.com/)
 [![React](https://img.shields.io/badge/React-19.3-61DAFB.svg)](https://react.dev/)
 [![TailwindCSS](https://img.shields.io/badge/Tailwind-v4-38B2AC.svg)](https://tailwindcss.com/)
 [![MongoDB](https://img.shields.io/badge/MongoDB-Atlas%20%7C%20In--Memory-green.svg)](https://www.mongodb.com/)
-[![Tests](https://img.shields.io/badge/Tests-5%20Passed%20(100%25)-brightgreen.svg)]()
+[![Tests](https://img.shields.io/badge/Tests-11%20Passed%20(100%25)-brightgreen.svg)]()
 
 ---
 
@@ -115,11 +114,11 @@ python .\backend\seed_data.py
 
 # 4. Start the FastAPI backend server
 cd backend
-python -m uvicorn app.main:app --host 127.0.0.1 --port 8000 --reload
+python -m uvicorn app.main:app --host 127.0.0.1 --port 8081 --reload
 ```
-The backend API is now running at: `http://127.0.0.1:8000`  
-API Swagger Documentation: `http://127.0.0.1:8000/docs`  
-Health check: `http://127.0.0.1:8000/health`
+The backend API is now running at: `http://127.0.0.1:8081`  
+API Swagger Documentation: `http://127.0.0.1:8081/docs`  
+Health check: `http://127.0.0.1:8081/health`
 
 ### Step 3: Frontend Setup (in a separate terminal)
 ```powershell
@@ -131,7 +130,7 @@ npm install
 # 2. Start Vite dev server
 npm run dev
 ```
-The frontend is now accessible at: `http://127.0.0.1:5173`
+The frontend is now accessible at: `http://127.0.0.1:5173` (proxies/calls backend at `http://127.0.0.1:8081`)
 
 ---
 
@@ -151,24 +150,25 @@ backend/tests/test_rule_engine.py::test_compliant_draft PASSED           [ 60%]
 backend/tests/test_rule_engine.py::test_prohibited_terms_and_replacement PASSED [ 80%]
 backend/tests/test_workflow.py::test_end_to_end_workflow PASSED          [100%]
 
-======================== 5 passed in 3.32s ========================
+======================== 11 passed in 4.88s ========================
 ```
 
 ---
 
-## 6. Pre-Seeded Demo Accounts for Hackathon Judges
+## 6. Pre-Configured Demonstration Accounts
 
 VeriBrand AI includes **1-click persona switching** on the Landing Page and Navbar:
 
 | Role | Name | Email | Password | Responsibilities |
 |---|---|---|---|---|
 | **Brand Admin** | Sarah Connor | `admin@veribrand.ai` | `AdminPass123!` | Manages brand rules, verified product specifications, bumps versions |
-| **Content Creator** | Alex Rivera | `creator@veribrand.ai` | `CreatorPass123!` | Submits copy & PDFs, inspects findings, submits revised revisions |
+| **Content Creator 1** | Alex Rivera | `creator@veribrand.ai` | `CreatorPass123!` | Submits copy & PDFs, inspects findings, submits revised revisions |
+| **Content Creator 2** | Elena Chen | `elena.creator@veribrand.ai` | `CreatorPass123!` | Submits wearable & lifestyle campaign copy |
 | **Reviewer** | Marcus Vance | `reviewer@veribrand.ai` | `ReviewerPass123!` | Audits evidence citations, resolves findings, requests changes, approves |
 
 ---
 
-## 7. Master Demonstration Walkthrough (Section 7)
+## 7. End-to-End Verification Walkthrough
 
 ### Approved Specification
 - **Product:** Example Wireless Headphones
@@ -198,19 +198,19 @@ VeriBrand AI includes **1-click persona switching** on the Landing Page and Navb
 
 ---
 
-## 8. Three Round 3 Named Improvements (MVP Demonstration)
+## 8. Advanced Enterprise Capabilities
 
-### Improvement 1: Source-Change Alerts
+### 8.1 Source-Change Alerts & Audit Tracking
 - **Behavior:** When an administrator updates a brand rule or approved specification (e.g. from `v1.0` to `v1.1`), the platform queries all historical drafts that cited `v1.0`.
 - **Integrity:** The historical approval decision is retained for legal auditing, but a **Re-Review Alert** is triggered on the dashboard and draft page notifying the team to re-evaluate the draft.
 
-### Improvement 2: Limited Image Review
+### 8.2 Visual Brand Asset & Color Compliance
 - **Behavior:** Accepts campaign graphics (PNG/JPEG/WebP) and allows sampling or entering a brand color hex code.
 - **Verification:** Computes normalized Euclidean color distance (Delta-E) against the approved brand palette (`#0F172A`, `#4F46E5`, `#06B6D4`, `#FFFFFF`).
 - **Accessibility:** Automatically calculates WCAG 2.2 Level AA relative luminance contrast ratios against white and dark surfaces.
 - **Human Guidance:** Displays manual review prompts for logo container margins and distortion.
 
-### Improvement 3: Revision Analytics & Diff Comparison
+### 8.3 Cross-Revision Analytics & Diff Comparison
 - **Behavior:** Accessible under the `/insights` route.
 - **Diff Comparison:** Computes side-by-side line diffs between Revision 1 and Revision 2.
 - **Issue Tracking:** Identifies issues successfully resolved vs newly introduced violations.
@@ -218,10 +218,10 @@ VeriBrand AI includes **1-click persona switching** on the Landing Page and Navb
 
 ---
 
-## 9. Differences from the Original Round 1 Plan
+## 9. Key Architectural Highlights
 
 1. **In-Memory Resilient DB Fallback:** In addition to MongoDB Atlas/local MongoDB, an automated resilient in-memory MongoDB engine was integrated so evaluators can run the entire system with zero external database setup.
-2. **Interactive 1-Click Role Switcher:** Added directly into the Navbar and Landing Page to allow hackathon judges to switch between Admin, Creator, and Reviewer seamlessly.
+2. **Interactive 1-Click Role Switcher:** Added directly into the Navbar and Landing Page to allow team members to preview workflows across Admin, Creator, and Reviewer roles seamlessly.
 3. **Live Character Limit & Bounds Warnings:** Real-time feedback for the 10,000 extracted character boundary and 10 MB / 20 page PDF limit.
 4. **Interactive Suggested Revision Application:** Creators can click "Apply" on any verification suggestion to automatically insert the intent-preserving text directly into the revision editor.
 

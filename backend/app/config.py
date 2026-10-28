@@ -12,10 +12,11 @@ class Settings(BaseSettings):
 
     # Database
     MONGODB_URI: str = "mongodb://localhost:27017"
-    MONGODB_DB_NAME: str = "veribrand_db"
+    MONGODB_DB_NAME: str = "veribrand_ai"
+    ALLOW_MOCK_DB: bool = False
 
     # Security
-    JWT_SECRET: str = "veribrand_dev_secret_key_hackathon_round2_super_secure_2026"
+    JWT_SECRET: str = "veribrand_dev_secret_key_production_grade_super_secure_2026"
     JWT_ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 1440  # 24 hours
 
@@ -28,7 +29,7 @@ class Settings(BaseSettings):
     LLM_BASE_URL: str = "https://api.openai.com/v1"
     LLM_MODEL: str = "gpt-4o-mini"
 
-    # Operating limits from Round 1 proposal
+    # Enterprise operating limits
     MAX_PDF_SIZE_MB: int = 10
     MAX_PDF_PAGES: int = 20
     MAX_EXTRACTED_CHARS: int = 10000

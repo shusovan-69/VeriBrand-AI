@@ -3,122 +3,155 @@ import { AlertTriangle, AlertOctagon, Info, ShieldAlert, CheckCircle, HelpCircle
 
 export function SeverityBadge({ severity }) {
   const sev = (severity || 'medium').toLowerCase();
-  switch (sev) {
-    case 'critical':
-      return (
-        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-rose-950/80 text-rose-300 border border-rose-600/60 shadow-sm shadow-rose-900/40">
-          <AlertOctagon className="h-3 w-3 text-rose-400" />
-          Critical
-        </span>
-      );
-    case 'high':
-      return (
-        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-amber-950/80 text-amber-300 border border-amber-600/50">
-          <AlertTriangle className="h-3 w-3 text-amber-400" />
-          High
-        </span>
-      );
-    case 'medium':
-      return (
-        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-950/60 text-yellow-300 border border-yellow-600/40">
-          Medium
-        </span>
-      );
-    case 'low':
-      return (
-        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-950/60 text-blue-300 border border-blue-600/40">
-          Low
-        </span>
-      );
-    default:
-      return (
-        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium bg-slate-800 text-slate-300 border border-slate-700">
-          <Info className="h-3 w-3 text-slate-400" />
-          Info
-        </span>
-      );
-  }
+  
+  const styles = {
+    critical: {
+      bg: 'rgba(239, 68, 68, 0.12)',
+      border: '1px solid rgba(239, 68, 68, 0.35)',
+      color: '#fca5a5',
+      icon: <AlertOctagon size={12} color="#f87171" style={{ flexShrink: 0 }} />,
+      label: 'Critical'
+    },
+    high: {
+      bg: 'rgba(255, 101, 0, 0.14)',
+      border: '1px solid rgba(255, 101, 0, 0.35)',
+      color: '#FF8533',
+      icon: <AlertTriangle size={12} color="#FF8533" style={{ flexShrink: 0 }} />,
+      label: 'High'
+    },
+    medium: {
+      bg: 'rgba(245, 158, 11, 0.12)',
+      border: '1px solid rgba(245, 158, 11, 0.3)',
+      color: '#fcd34d',
+      icon: <AlertTriangle size={12} color="#fbbf24" style={{ flexShrink: 0 }} />,
+      label: 'Medium'
+    },
+    low: {
+      bg: 'rgba(6, 182, 212, 0.12)',
+      border: '1px solid rgba(6, 182, 212, 0.3)',
+      color: '#67e8f9',
+      icon: <Info size={12} color="#38bdf8" style={{ flexShrink: 0 }} />,
+      label: 'Low'
+    },
+    default: {
+      bg: 'rgba(255, 255, 255, 0.05)',
+      border: '1px solid rgba(255, 255, 255, 0.1)',
+      color: 'rgba(255, 255, 255, 0.6)',
+      icon: <Info size={12} color="rgba(255,255,255,0.5)" style={{ flexShrink: 0 }} />,
+      label: 'Info'
+    }
+  };
+
+  const current = styles[sev] || styles.default;
+
+  return (
+    <span style={{
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '5px',
+      padding: '3px 9px',
+      borderRadius: '999px',
+      fontSize: '0.7rem',
+      fontWeight: 700,
+      letterSpacing: '0.04em',
+      textTransform: 'uppercase',
+      background: current.bg,
+      border: current.border,
+      color: current.color,
+    }}>
+      {current.icon}
+      {current.label}
+    </span>
+  );
 }
 
 export function CategoryBadge({ category }) {
   const cat = (category || 'unsupported_claim').toLowerCase();
-  switch (cat) {
-    case 'contradiction':
-      return (
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold bg-red-900/40 text-red-300 border border-red-700/50">
-          Factual Contradiction
-        </span>
-      );
-    case 'guideline_violation':
-      return (
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold bg-purple-900/40 text-purple-300 border border-purple-700/50">
-          Guideline Violation
-        </span>
-      );
-    case 'unsupported_claim':
-      return (
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold bg-amber-900/40 text-amber-300 border border-amber-700/50">
-          Unsupported Claim
-        </span>
-      );
-    case 'tone_issue':
-      return (
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold bg-indigo-900/40 text-indigo-300 border border-indigo-700/50">
-          Tone & Style
-        </span>
-      );
-    case 'accessibility_prompt':
-      return (
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-semibold bg-cyan-900/40 text-cyan-300 border border-cyan-700/50">
-          Accessibility Prompt
-        </span>
-      );
-    default:
-      return (
-        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-xs font-medium bg-slate-800 text-slate-300 border border-slate-700">
-          {category}
-        </span>
-      );
-  }
+
+  const map = {
+    contradiction: { label: 'Factual Contradiction', color: '#f87171', bg: 'rgba(239, 68, 68, 0.1)' },
+    guideline_violation: { label: 'Guideline Violation', color: '#c084fc', bg: 'rgba(168, 85, 247, 0.1)' },
+    unsupported_claim: { label: 'Unsupported Claim', color: '#fbbf24', bg: 'rgba(245, 158, 11, 0.1)' },
+    tone_issue: { label: 'Tone & Style', color: '#818cf8', bg: 'rgba(99, 102, 241, 0.1)' },
+    accessibility_prompt: { label: 'Accessibility Prompt', color: '#38bdf8', bg: 'rgba(14, 165, 233, 0.1)' },
+  };
+
+  const item = map[cat] || { label: category, color: 'rgba(255,255,255,0.7)', bg: 'rgba(255,255,255,0.06)' };
+
+  return (
+    <span style={{
+      display: 'inline-flex',
+      alignItems: 'center',
+      padding: '3px 8px',
+      borderRadius: '8px',
+      fontSize: '0.72rem',
+      fontWeight: 600,
+      background: item.bg,
+      border: `1px solid ${item.color}30`,
+      color: item.color,
+    }}>
+      {item.label}
+    </span>
+  );
 }
 
 export function EvidenceStatusBadge({ status }) {
   const st = (status || 'insufficient_evidence').toLowerCase();
-  switch (st) {
-    case 'contradicted':
-      return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-rose-950/90 text-rose-300 border border-rose-500/60 shadow-sm">
-          <AlertOctagon className="h-3.5 w-3.5 text-rose-400" />
-          Contradicted by Approved Evidence
-        </span>
-      );
-    case 'supported':
-      return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-emerald-950/80 text-emerald-300 border border-emerald-600/50">
-          <CheckCircle className="h-3.5 w-3.5 text-emerald-400" />
-          Supported by Approved Evidence
-        </span>
-      );
-    case 'insufficient_evidence':
-      return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-orange-950/80 text-orange-300 border border-orange-600/50">
-          <HelpCircle className="h-3.5 w-3.5 text-orange-400" />
-          Insufficient Approved Evidence
-        </span>
-      );
-    case 'guideline_violation':
-      return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-purple-950/80 text-purple-300 border border-purple-600/50">
-          <ShieldAlert className="h-3.5 w-3.5 text-purple-400" />
-          Brand Guideline Violation
-        </span>
-      );
-    default:
-      return (
-        <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-900 text-slate-300 border border-slate-700">
-          <Info className="h-3.5 w-3.5 text-slate-400" />
-          Needs Human Judgment
-        </span>
-      );
-  }
+
+  const map = {
+    contradicted: {
+      icon: <AlertOctagon size={13} color="#f87171" />,
+      label: 'Contradicted by Approved Evidence',
+      color: '#fca5a5',
+      bg: 'rgba(239, 68, 68, 0.12)',
+      border: 'rgba(239, 68, 68, 0.3)',
+    },
+    supported: {
+      icon: <CheckCircle size={13} color="#34d399" />,
+      label: 'Supported by Approved Evidence',
+      color: '#6ee7b7',
+      bg: 'rgba(16, 185, 129, 0.12)',
+      border: 'rgba(16, 185, 129, 0.3)',
+    },
+    insufficient_evidence: {
+      icon: <HelpCircle size={13} color="#FF8533" />,
+      label: 'Insufficient Approved Evidence',
+      color: '#FF8533',
+      bg: 'rgba(255, 101, 0, 0.12)',
+      border: 'rgba(255, 101, 0, 0.3)',
+    },
+    guideline_violation: {
+      icon: <ShieldAlert size={13} color="#c084fc" />,
+      label: 'Brand Guideline Violation',
+      color: '#d8b4fe',
+      bg: 'rgba(168, 85, 247, 0.12)',
+      border: 'rgba(168, 85, 247, 0.3)',
+    },
+  };
+
+  const item = map[st] || {
+    icon: <Info size={13} color="rgba(255,255,255,0.6)" />,
+    label: 'Needs Human Judgment',
+    color: 'rgba(255,255,255,0.7)',
+    bg: 'rgba(255, 255, 255, 0.05)',
+    border: 'rgba(255, 255, 255, 0.1)',
+  };
+
+  return (
+    <span style={{
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '6px',
+      padding: '4px 10px',
+      borderRadius: '10px',
+      fontSize: '0.72rem',
+      fontWeight: 600,
+      background: item.bg,
+      border: `1px solid ${item.border}`,
+      color: item.color,
+    }}>
+      {item.icon}
+      {item.label}
+    </span>
+  );
 }

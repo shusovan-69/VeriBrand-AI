@@ -64,7 +64,8 @@ def root():
     return {
         "platform": "VeriBrand AI",
         "purpose": "Evidence-First Brand Governance Platform",
-        "hackathon": "We Code Coders Round 2 — The Build",
+        "edition": "Enterprise Edition",
+        "version": "2.4.0",
         "docs_url": "/docs"
     }
 

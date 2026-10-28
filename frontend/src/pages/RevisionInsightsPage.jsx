@@ -27,7 +27,6 @@ export default function RevisionInsightsPage() {
   const [loadingDiff, setLoadingDiff] = useState(false);
   const [loadingTrends, setLoadingTrends] = useState(true);
 
-  // Fetch initial drafts list and trends
   useEffect(() => {
     draftsApi.getDrafts().then((res) => {
       setDrafts(res.data);
@@ -45,7 +44,6 @@ export default function RevisionInsightsPage() {
     }).catch(console.error);
   }, []);
 
-  // Fetch revisions when selectedDraftId changes
   useEffect(() => {
     if (!selectedDraftId) return;
     draftsApi.getDraftHistory(selectedDraftId).then((res) => {
@@ -61,7 +59,6 @@ export default function RevisionInsightsPage() {
     }).catch(console.error);
   }, [selectedDraftId]);
 
-  // Fetch diff comparison
   const handleCompare = async () => {
     if (!selectedDraftId || !baseRev || !newRev) return;
     setLoadingDiff(true);
@@ -82,50 +79,69 @@ export default function RevisionInsightsPage() {
   }, [selectedDraftId, baseRev, newRev]);
 
   return (
-    <div className="space-y-6">
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
       {/* Header */}
-      <div className="pb-4 border-b border-slate-800">
-        <div className="flex items-center gap-2 text-cyan-400 text-xs font-bold uppercase tracking-wider mb-1">
-          <Sparkles className="h-4 w-4" />
-          Round 3 Improvements: Insights & Source-Change Tracing
+      <div style={{ paddingBottom: '18px', borderBottom: '1px solid rgba(255, 255, 255, 0.06)' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#FF8533', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px' }}>
+          <Sparkles size={13} color="#FF6500" />
+          Intelligence Suite: Revision Analytics & Source Alerts
         </div>
-        <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2.5">
-          <GitCompare className="h-6 w-6 text-indigo-400" />
+        <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '10px', margin: 0 }}>
+          <GitCompare size={24} color="#FF6500" />
           Revision Analytics & Source Alerts
         </h1>
-        <p className="text-xs text-slate-400 mt-1">
+        <p style={{ fontSize: '0.82rem', color: 'rgba(255, 255, 255, 0.45)', marginTop: '6px' }}>
           Compare revisions side-by-side, observe resolved vs introduced issues, and audit source-change re-review triggers.
         </p>
       </div>
 
-      {/* Source-Change Alerts Section (Improvement 1) */}
+      {/* Source-Change Alerts Section */}
       {alerts.length > 0 && (
-        <div className="rounded-2xl border border-amber-500/40 bg-amber-950/20 p-5 shadow-sm">
-          <h2 className="text-sm font-bold text-amber-300 flex items-center gap-2 mb-2">
-            <ShieldAlert className="h-4 w-4 text-amber-400" />
+        <div style={{
+          background: 'rgba(255, 101, 0, 0.07)',
+          border: '1px solid rgba(255, 101, 0, 0.25)',
+          borderRadius: '16px',
+          padding: '20px',
+        }}>
+          <h2 style={{ fontSize: '0.92rem', fontWeight: 700, color: '#FF8533', display: 'flex', alignItems: 'center', gap: '8px', margin: '0 0 8px 0' }}>
+            <ShieldAlert size={18} color="#FF8533" />
             Active Source-Change Re-Review Alerts ({alerts.length})
           </h2>
-          <p className="text-xs text-slate-300 mb-4">
+          <p style={{ fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.65)', margin: '0 0 16px 0', lineHeight: '1.4' }}>
             The following drafts cited a source version that has since been updated by administrators. Historical decisions remain recorded, but re-evaluation is advised:
           </p>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '12px' }}>
             {alerts.map((alt) => (
-              <div key={alt._id || alt.alert_id} className="p-3.5 rounded-xl bg-slate-900/90 border border-amber-800/50 text-xs">
-                <div className="flex items-center justify-between mb-1">
-                  <span className="font-mono text-cyan-300 font-semibold">{alt.source_id}</span>
-                  <span className="text-[10px] bg-amber-950 text-amber-300 px-2 py-0.5 rounded border border-amber-700/60 font-mono">
+              <div key={alt._id || alt.alert_id} style={{
+                padding: '14px',
+                borderRadius: '12px',
+                background: '#161616',
+                border: '1px solid rgba(255, 101, 0, 0.2)',
+                fontSize: '0.8rem',
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                  <span style={{ fontFamily: 'monospace', color: '#FF8533', fontWeight: 700 }}>{alt.source_id}</span>
+                  <span style={{
+                    fontSize: '0.7rem',
+                    background: 'rgba(255, 101, 0, 0.12)',
+                    color: '#FF8533',
+                    padding: '2px 8px',
+                    borderRadius: '6px',
+                    border: '1px solid rgba(255, 101, 0, 0.25)',
+                    fontFamily: 'monospace',
+                  }}>
                     {alt.old_version} → {alt.new_version}
                   </span>
                 </div>
-                <p className="text-slate-300 mt-1">{alt.message}</p>
-                <div className="mt-3 flex items-center justify-between pt-2 border-t border-slate-800">
-                  <span className="text-[10px] text-slate-400 font-mono">Draft: {alt.draft_id}</span>
+                <p style={{ color: 'rgba(255, 255, 255, 0.75)', margin: '0 0 12px 0', lineHeight: '1.4' }}>{alt.message}</p>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '10px', borderTop: '1px solid rgba(255, 255, 255, 0.05)' }}>
+                  <span style={{ fontSize: '0.72rem', color: 'rgba(255, 255, 255, 0.4)', fontFamily: 'monospace' }}>Draft: {alt.draft_id}</span>
                   <Link
                     to={`/drafts/${alt.draft_id}`}
-                    className="text-xs text-cyan-400 hover:text-cyan-300 font-semibold flex items-center gap-1"
+                    style={{ fontSize: '0.75rem', color: '#FF8533', textDecoration: 'none', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '4px' }}
                   >
-                    Audit Draft <ArrowRight className="h-3 w-3" />
+                    Audit Draft <ArrowRight size={12} />
                   </Link>
                 </div>
               </div>
@@ -134,23 +150,24 @@ export default function RevisionInsightsPage() {
         </div>
       )}
 
-      {/* Revision Diff Comparison Controls (Improvement 3) */}
-      <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-5 shadow-sm space-y-4">
-        <h3 className="text-sm font-bold text-white flex items-center gap-2">
-          <GitCompare className="h-4 w-4 text-cyan-400" />
+      {/* Cross-Revision Difference Comparison Controls */}
+      <div className="card" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <h3 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#fff', display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}>
+          <GitCompare size={18} color="#FF6500" />
           Cross-Revision Difference Comparison
         </h3>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '14px', fontSize: '0.8rem' }}>
           <div>
-            <label className="block text-slate-300 font-medium mb-1">Select Marketing Draft</label>
+            <label style={{ display: 'block', color: 'rgba(255, 255, 255, 0.6)', fontWeight: 600, marginBottom: '6px' }}>Select Marketing Draft</label>
             <select
               value={selectedDraftId}
               onChange={(e) => setSelectedDraftId(e.target.value)}
-              className="w-full p-2 rounded-lg bg-slate-950 border border-slate-700 text-white"
+              className="input-dark"
+              style={{ cursor: 'pointer' }}
             >
               {drafts.map((d) => (
-                <option key={d.draft_id} value={d.draft_id}>
+                <option key={d.draft_id} value={d.draft_id} style={{ background: '#161616', color: '#fff' }}>
                   {d.title} ({d.draft_id})
                 </option>
               ))}
@@ -158,14 +175,15 @@ export default function RevisionInsightsPage() {
           </div>
 
           <div>
-            <label className="block text-slate-300 font-medium mb-1">Base Revision (Before)</label>
+            <label style={{ display: 'block', color: 'rgba(255, 255, 255, 0.6)', fontWeight: 600, marginBottom: '6px' }}>Base Revision (Before)</label>
             <select
               value={baseRev}
               onChange={(e) => setBaseRev(e.target.value)}
-              className="w-full p-2 rounded-lg bg-slate-950 border border-slate-700 text-white font-mono"
+              className="input-dark"
+              style={{ cursor: 'pointer', fontFamily: 'monospace' }}
             >
               {revisions.map((r) => (
-                <option key={r.revision_id} value={r.revision_id}>
+                <option key={r.revision_id} value={r.revision_id} style={{ background: '#161616', color: '#fff' }}>
                   Revision #{r.revision_number} ({r.revision_id.slice(0, 10)})
                 </option>
               ))}
@@ -173,14 +191,15 @@ export default function RevisionInsightsPage() {
           </div>
 
           <div>
-            <label className="block text-slate-300 font-medium mb-1">New Revision (After)</label>
+            <label style={{ display: 'block', color: 'rgba(255, 255, 255, 0.6)', fontWeight: 600, marginBottom: '6px' }}>New Revision (After)</label>
             <select
               value={newRev}
               onChange={(e) => setNewRev(e.target.value)}
-              className="w-full p-2 rounded-lg bg-slate-950 border border-slate-700 text-white font-mono"
+              className="input-dark"
+              style={{ cursor: 'pointer', fontFamily: 'monospace' }}
             >
               {revisions.map((r) => (
-                <option key={r.revision_id} value={r.revision_id}>
+                <option key={r.revision_id} value={r.revision_id} style={{ background: '#161616', color: '#fff' }}>
                   Revision #{r.revision_number} ({r.revision_id.slice(0, 10)})
                 </option>
               ))}
@@ -188,65 +207,80 @@ export default function RevisionInsightsPage() {
           </div>
         </div>
 
-        {/* Diff Results Output */}
+        {/* Diff Output */}
         {loadingDiff ? (
-          <div className="py-8 text-center text-xs text-slate-400">Computing revision delta...</div>
+          <div style={{ padding: '40px 0', textAlign: 'center', fontSize: '0.82rem', color: 'rgba(255, 255, 255, 0.4)' }}>
+            Computing revision delta...
+          </div>
         ) : diffData && (
-          <div className="space-y-4 pt-3 border-t border-slate-800">
-            {/* Diff Summary Counters */}
-            <div className="grid grid-cols-3 gap-3 text-xs text-center font-mono">
-              <div className="p-3 rounded-xl bg-emerald-950/40 border border-emerald-800/60">
-                <div className="text-xl font-bold text-emerald-400">{diffData.resolved_count}</div>
-                <span className="text-[11px] text-slate-300">Issues Resolved</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '18px', paddingTop: '16px', borderTop: '1px solid rgba(255, 255, 255, 0.06)' }}>
+            {/* Diff Counters */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: '12px', textAlign: 'center', fontFamily: 'monospace' }}>
+              <div style={{ padding: '14px', borderRadius: '12px', background: 'rgba(16, 185, 129, 0.1)', border: '1px solid rgba(16, 185, 129, 0.25)' }}>
+                <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#34d399' }}>{diffData.resolved_count}</div>
+                <span style={{ fontSize: '0.72rem', color: 'rgba(255, 255, 255, 0.5)' }}>Issues Resolved</span>
               </div>
-              <div className="p-3 rounded-xl bg-rose-950/40 border border-rose-800/60">
-                <div className="text-xl font-bold text-rose-400">{diffData.new_issues_count}</div>
-                <span className="text-[11px] text-slate-300">New Issues Introduced</span>
+              <div style={{ padding: '14px', borderRadius: '12px', background: 'rgba(239, 68, 68, 0.1)', border: '1px solid rgba(239, 68, 68, 0.25)' }}>
+                <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#f87171' }}>{diffData.new_issues_count}</div>
+                <span style={{ fontSize: '0.72rem', color: 'rgba(255, 255, 255, 0.5)' }}>New Issues Introduced</span>
               </div>
-              <div className="p-3 rounded-xl bg-amber-950/40 border border-amber-800/60">
-                <div className="text-xl font-bold text-amber-400">{diffData.persistent_count}</div>
-                <span className="text-[11px] text-slate-300">Unresolved Issues</span>
+              <div style={{ padding: '14px', borderRadius: '12px', background: 'rgba(245, 158, 11, 0.1)', border: '1px solid rgba(245, 158, 11, 0.25)' }}>
+                <div style={{ fontSize: '1.4rem', fontWeight: 800, color: '#fbbf24' }}>{diffData.persistent_count}</div>
+                <span style={{ fontSize: '0.72rem', color: 'rgba(255, 255, 255, 0.5)' }}>Unresolved Issues</span>
               </div>
             </div>
 
-            {/* Unified Line Diff Block */}
+            {/* Unified Line Diff */}
             <div>
-              <p className="text-xs font-semibold text-slate-300 mb-1.5">Unified Text Changes:</p>
-              <div className="p-4 rounded-xl bg-slate-950 border border-slate-800 font-mono text-xs overflow-x-auto leading-relaxed">
+              <p style={{ fontSize: '0.78rem', fontWeight: 600, color: 'rgba(255, 255, 255, 0.6)', marginBottom: '8px' }}>Unified Text Changes:</p>
+              <div style={{
+                padding: '16px',
+                borderRadius: '12px',
+                background: '#0d0d0d',
+                border: '1px solid rgba(255, 255, 255, 0.06)',
+                fontFamily: 'monospace',
+                fontSize: '0.8rem',
+                lineHeight: '1.6',
+                overflowX: 'auto',
+              }}>
                 {diffData.text_diff && diffData.text_diff.length > 0 ? (
                   diffData.text_diff.map((line, idx) => (
                     <div
                       key={idx}
-                      className={
-                        line.startsWith('+')
-                          ? 'text-emerald-400 bg-emerald-950/30 px-1 py-0.5 rounded'
-                          : line.startsWith('-')
-                          ? 'text-rose-400 bg-rose-950/30 px-1 py-0.5 rounded'
-                          : line.startsWith('@')
-                          ? 'text-cyan-400 font-bold'
-                          : 'text-slate-400'
-                      }
+                      style={{
+                        padding: '2px 6px',
+                        borderRadius: '4px',
+                        background: line.startsWith('+') ? 'rgba(16, 185, 129, 0.15)' : line.startsWith('-') ? 'rgba(239, 68, 68, 0.15)' : 'transparent',
+                        color: line.startsWith('+') ? '#34d399' : line.startsWith('-') ? '#f87171' : line.startsWith('@') ? '#FF8533' : 'rgba(255, 255, 255, 0.6)',
+                        fontWeight: line.startsWith('@') ? 700 : 400,
+                      }}
                     >
                       {line}
                     </div>
                   ))
                 ) : (
-                  <span className="text-slate-500">No textual differences between selected revisions.</span>
+                  <span style={{ color: 'rgba(255, 255, 255, 0.35)' }}>No textual differences between selected revisions.</span>
                 )}
               </div>
             </div>
 
-            {/* Resolved vs Persistent Findings Breakdown */}
+            {/* Resolved Findings */}
             {diffData.resolved_issues?.length > 0 && (
-              <div className="p-3.5 rounded-xl bg-emerald-950/20 border border-emerald-900/40 text-xs">
-                <span className="text-emerald-400 font-semibold flex items-center gap-1.5 mb-2">
-                  <CheckCircle className="h-4 w-4" />
+              <div style={{
+                padding: '16px',
+                borderRadius: '12px',
+                background: 'rgba(16, 185, 129, 0.05)',
+                border: '1px solid rgba(16, 185, 129, 0.2)',
+                fontSize: '0.8rem',
+              }}>
+                <span style={{ color: '#34d399', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '8px' }}>
+                  <CheckCircle size={15} />
                   Successfully Corrected in New Revision:
                 </span>
-                <ul className="list-disc list-inside space-y-1 text-slate-300">
+                <ul style={{ margin: 0, paddingLeft: '18px', color: 'rgba(255, 255, 255, 0.7)', lineHeight: '1.6' }}>
                   {diffData.resolved_issues.map((iss, i) => (
                     <li key={i}>
-                      <span className="font-mono text-rose-300">"{iss.original_text}"</span>: {iss.explanation}
+                      <span style={{ fontFamily: 'monospace', color: '#f87171' }}>"{iss.original_text}"</span>: {iss.explanation}
                     </li>
                   ))}
                 </ul>
@@ -256,33 +290,52 @@ export default function RevisionInsightsPage() {
         )}
       </div>
 
-      {/* Workspace Recurring Trends Summary */}
+      {/* Workspace Violation Trends */}
       {trends && (
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/70 p-5 shadow-sm">
-          <div className="flex items-center justify-between mb-4 pb-2 border-b border-slate-800">
+        <div className="card" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '18px' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '10px', paddingBottom: '14px', borderBottom: '1px solid rgba(255, 255, 255, 0.06)' }}>
             <div>
-              <h3 className="text-sm font-bold text-white flex items-center gap-2">
-                <BarChart3 className="h-4 w-4 text-cyan-400" />
+              <h3 style={{ fontSize: '0.95rem', fontWeight: 700, color: '#fff', display: 'flex', alignItems: 'center', gap: '8px', margin: 0 }}>
+                <BarChart3 size={18} color="#FF6500" />
                 Workspace Violation Trends & Recurring Mistakes
               </h3>
-              <p className="text-xs text-slate-400">Aggregate statistics from all historical analysis runs across the workspace.</p>
+              <p style={{ fontSize: '0.78rem', color: 'rgba(255, 255, 255, 0.4)', marginTop: '2px' }}>
+                Aggregate statistics from all historical analysis runs across the workspace.
+              </p>
             </div>
-            <span className="font-mono text-xs text-slate-400">
-              Total Recorded Violations: <strong className="text-white">{trends.total_violations_recorded}</strong>
+            <span style={{ fontSize: '0.78rem', fontFamily: 'monospace', color: 'rgba(255, 255, 255, 0.5)' }}>
+              Total Recorded Violations: <strong style={{ color: '#FF8533' }}>{trends.total_violations_recorded}</strong>
             </span>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '20px', fontSize: '0.8rem' }}>
             {/* Top Violated Rules */}
-            <div className="space-y-2">
-              <span className="font-semibold text-slate-300 block mb-1">Top Violated Source Rules:</span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <span style={{ fontWeight: 600, color: 'rgba(255, 255, 255, 0.6)' }}>Top Violated Source Rules:</span>
               {trends.top_violated_rules?.length === 0 ? (
-                <div className="text-slate-500">No violations recorded yet.</div>
+                <div style={{ color: 'rgba(255, 255, 255, 0.35)' }}>No violations recorded yet.</div>
               ) : (
                 trends.top_violated_rules.map((rule) => (
-                  <div key={rule.rule_id} className="p-2.5 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-between">
-                    <span className="font-mono text-cyan-300 font-medium">{rule.rule_id}</span>
-                    <span className="px-2 py-0.5 rounded bg-slate-900 text-slate-300 font-mono font-bold">
+                  <div key={rule.rule_id} style={{
+                    padding: '10px 14px',
+                    borderRadius: '10px',
+                    background: 'rgba(0, 0, 0, 0.25)',
+                    border: '1px solid rgba(255, 255, 255, 0.05)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}>
+                    <span style={{ fontFamily: 'monospace', color: '#FF8533', fontWeight: 600 }}>{rule.rule_id}</span>
+                    <span style={{
+                      padding: '2px 8px',
+                      borderRadius: '6px',
+                      background: '#161616',
+                      border: '1px solid rgba(255, 255, 255, 0.08)',
+                      color: 'rgba(255, 255, 255, 0.7)',
+                      fontFamily: 'monospace',
+                      fontWeight: 700,
+                      fontSize: '0.72rem',
+                    }}>
                       {rule.count} breach{rule.count > 1 ? 'es' : ''}
                     </span>
                   </div>
@@ -291,15 +344,32 @@ export default function RevisionInsightsPage() {
             </div>
 
             {/* Top Flagged Phrases */}
-            <div className="space-y-2">
-              <span className="font-semibold text-slate-300 block mb-1">Most Frequently Flagged Claims:</span>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <span style={{ fontWeight: 600, color: 'rgba(255, 255, 255, 0.6)' }}>Most Frequently Flagged Claims:</span>
               {trends.top_flagged_phrases?.length === 0 ? (
-                <div className="text-slate-500">No claims flagged yet.</div>
+                <div style={{ color: 'rgba(255, 255, 255, 0.35)' }}>No claims flagged yet.</div>
               ) : (
                 trends.top_flagged_phrases.map((phrase, i) => (
-                  <div key={i} className="p-2.5 rounded-lg bg-slate-950 border border-slate-800 flex items-center justify-between">
-                    <span className="font-mono text-rose-300 font-medium">"{phrase.phrase}"</span>
-                    <span className="px-2 py-0.5 rounded bg-slate-900 text-slate-300 font-mono font-bold">
+                  <div key={i} style={{
+                    padding: '10px 14px',
+                    borderRadius: '10px',
+                    background: 'rgba(0, 0, 0, 0.25)',
+                    border: '1px solid rgba(255, 255, 255, 0.05)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}>
+                    <span style={{ fontFamily: 'monospace', color: '#f87171', fontWeight: 600 }}>"{phrase.phrase}"</span>
+                    <span style={{
+                      padding: '2px 8px',
+                      borderRadius: '6px',
+                      background: '#161616',
+                      border: '1px solid rgba(255, 255, 255, 0.08)',
+                      color: 'rgba(255, 255, 255, 0.7)',
+                      fontFamily: 'monospace',
+                      fontWeight: 700,
+                      fontSize: '0.72rem',
+                    }}>
                       {phrase.count}x
                     </span>
                   </div>

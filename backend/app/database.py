@@ -1,4 +1,5 @@
 import logging
+import re
 from typing import Optional
 from pymongo import MongoClient
 from pymongo.database import Database
@@ -14,37 +15,71 @@ _db: Optional[Database] = None
 _is_mock: bool = False
 
 
+def mask_mongo_uri(uri: str) -> str:
+    """Mask credentials in MongoDB connection string for secure logging."""
+    if not uri:
+        return "<empty>"
+    return re.sub(r"://([^:]+):([^@]+)@", r"://\1:****@", uri)
+
+
 def connect_to_mongo() -> Database:
     global _client, _db, _is_mock
 
-    # Attempt real MongoDB connection first
+    # Attempt real MongoDB connection
     if settings.MONGODB_URI:
+        safe_uri = mask_mongo_uri(settings.MONGODB_URI)
         try:
-            logger.info(f"Attempting connection to MongoDB at: {settings.MONGODB_URI}...")
+            logger.info(f"Connecting to MongoDB cluster ({safe_uri})...")
             client = MongoClient(
                 settings.MONGODB_URI,
-                serverSelectionTimeoutMS=2000,
-                connectTimeoutMS=2000
+                serverSelectionTimeoutMS=5000,
+                connectTimeoutMS=5000
             )
-            # Trigger server selection
+            # Verify connectivity & authentication
             client.admin.command("ping")
+
+            # Determine target database: prefer URI default db or settings.MONGODB_DB_NAME
+            try:
+                default_db = client.get_default_database()
+                target_db = default_db if default_db is not None else client[settings.MONGODB_DB_NAME]
+            except Exception:
+                target_db = client[settings.MONGODB_DB_NAME]
+
             _client = client
-            _db = _client[settings.MONGODB_DB_NAME]
+            _db = target_db
             _is_mock = False
-            logger.info(f"Successfully connected to active MongoDB database: '{settings.MONGODB_DB_NAME}'")
+            logger.info(f"Successfully connected to MongoDB database: '{_db.name}'")
             init_indexes(_db)
             return _db
         except (ConnectionFailure, ServerSelectionTimeoutError, Exception) as e:
+            logger.error(f"Failed to connect to MongoDB ({safe_uri}): {e}")
+            if not getattr(settings, "ALLOW_MOCK_DB", False):
+                logger.critical(
+                    "Production safety error: Real MongoDB connection failed and ALLOW_MOCK_DB is False. "
+                    "Aborting startup to prevent accidental data loss. "
+                    "Please verify Atlas network access (IP allowlist), user credentials, and connection string."
+                )
+                raise ConnectionError(
+                    f"MongoDB connection failed: {e}. "
+                    "Fallback to mock database is disabled for production safety. "
+                    "Set ALLOW_MOCK_DB=true in your environment only if you explicitly intend to run offline mock tests."
+                ) from e
+
             logger.warning(
-                f"Could not connect to external MongoDB ({e}). "
-                f"Falling back to high-fidelity in-memory MongoDB engine (mongomock) for local/test execution."
+                "ALLOW_MOCK_DB is enabled. Falling back to in-memory mongomock for local testing."
             )
 
-    # In-memory mongomock fallback
+    elif not getattr(settings, "ALLOW_MOCK_DB", False):
+        raise ConnectionError(
+            "MONGODB_URI is not configured and ALLOW_MOCK_DB is False. "
+            "Please configure MONGODB_URI in backend/.env."
+        )
+
+    # In-memory mongomock fallback (only when ALLOW_MOCK_DB=True)
     _client = mongomock.MongoClient()
     _db = _client[settings.MONGODB_DB_NAME]
     _is_mock = True
-    logger.info("Initialized resilient in-memory MongoDB instance.")
+    logger.info("Initialized in-memory MongoDB test instance (ALLOW_MOCK_DB=true).")
     init_indexes(_db)
     return _db
 

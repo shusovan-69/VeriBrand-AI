@@ -16,7 +16,7 @@ import { insightsApi } from '../services/api';
 export default function ImageReviewPage() {
   const [file, setFile] = useState(null);
   const [previewUrl, setPreviewUrl] = useState(null);
-  const [sampledHex, setSampledHex] = useState('#4F46E5');
+  const [sampledHex, setSampledHex] = useState('#FF6500');
   const [analyzing, setAnalyzing] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState('');
@@ -63,102 +63,168 @@ export default function ImageReviewPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div style={{ maxWidth: '960px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '24px' }}>
       {/* Header */}
-      <div className="pb-4 border-b border-slate-800">
-        <div className="flex items-center gap-2 text-cyan-400 text-xs font-bold uppercase tracking-wider mb-1">
-          <Sparkles className="h-4 w-4" />
-          Round 3 Improvement: Limited Image Review
+      <div style={{ paddingBottom: '18px', borderBottom: '1px solid rgba(255, 255, 255, 0.06)' }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', color: '#FF8533', fontSize: '0.72rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', marginBottom: '6px' }}>
+          <Sparkles size={13} color="#FF6500" />
+          Brand Asset Studio: Visual & Palette Verification
         </div>
-        <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2.5">
-          <ImageIcon className="h-6 w-6 text-cyan-400" />
+        <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '10px', margin: 0 }}>
+          <ImageIcon size={24} color="#FF6500" />
           Visual Brand Asset & Color Palette Verification
         </h1>
-        <p className="text-xs text-slate-400 mt-1">
+        <p style={{ fontSize: '0.82rem', color: 'rgba(255, 255, 255, 0.45)', marginTop: '6px' }}>
           Upload promotional graphics, evaluate brand color fidelity against approved swatches, and calculate WCAG 2.2 AA contrast ratios.
         </p>
       </div>
 
       {error && (
-        <div className="rounded-xl bg-rose-950/60 border border-rose-800 p-4 text-xs text-rose-300">
+        <div style={{
+          padding: '12px 16px',
+          borderRadius: '12px',
+          background: 'rgba(239, 68, 68, 0.08)',
+          border: '1px solid rgba(239, 68, 68, 0.25)',
+          color: '#f87171',
+          fontSize: '0.82rem',
+        }}>
           {error}
         </div>
       )}
 
-      {/* Upload & Configuration Form */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Left: Upload Zone */}
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 space-y-4">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Campaign Graphic Upload</h3>
+      {/* Main 2-Column Bento Layout */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '20px' }}>
+        {/* Left Column: Upload & Color Sampling */}
+        <div className="card" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '18px' }}>
+          <h3 style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(255, 255, 255, 0.4)', margin: 0 }}>
+            Campaign Graphic Upload
+          </h3>
 
-          <div className="border-2 border-dashed border-slate-800 rounded-xl p-6 text-center hover:border-slate-700 transition-colors">
+          <div style={{
+            border: '2px dashed rgba(255, 255, 255, 0.08)',
+            borderRadius: '16px',
+            padding: '24px',
+            textAlign: 'center',
+            background: 'rgba(255, 255, 255, 0.01)',
+          }}>
             {previewUrl ? (
-              <div className="space-y-3">
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px' }}>
                 <img
                   src={previewUrl}
                   alt="Upload preview"
-                  className="max-h-56 mx-auto rounded-lg object-contain border border-slate-800"
+                  style={{
+                    maxHeight: '220px',
+                    maxWidth: '100%',
+                    borderRadius: '12px',
+                    objectFit: 'contain',
+                    border: '1px solid rgba(255, 255, 255, 0.08)',
+                  }}
                 />
-                <p className="text-xs text-slate-400 font-mono">{file?.name}</p>
-                <label className="cursor-pointer text-xs text-cyan-400 hover:text-cyan-300 underline block">
+                <p style={{ fontSize: '0.75rem', fontFamily: 'monospace', color: 'rgba(255, 255, 255, 0.5)', margin: 0 }}>
+                  {file?.name}
+                </p>
+                <label style={{ fontSize: '0.78rem', color: '#FF8533', cursor: 'pointer', fontWeight: 600 }}>
                   Change image
-                  <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+                  <input type="file" accept="image/*" onChange={handleFileChange} style={{ display: 'none' }} />
                 </label>
               </div>
             ) : (
-              <label className="cursor-pointer block space-y-2">
-                <Upload className="h-8 w-8 text-slate-500 mx-auto" />
-                <div className="text-xs font-semibold text-slate-200">Click to upload visual banner</div>
-                <div className="text-[11px] text-slate-500">PNG, JPEG, WebP up to 10 MB</div>
-                <input type="file" accept="image/*" onChange={handleFileChange} className="hidden" />
+              <label style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px', cursor: 'pointer' }}>
+                <div style={{ width: '48px', height: '48px', borderRadius: '12px', background: 'rgba(255, 101, 0, 0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Upload size={22} color="#FF6500" />
+                </div>
+                <div>
+                  <div style={{ fontSize: '0.88rem', fontWeight: 700, color: '#fff' }}>Click to upload visual banner</div>
+                  <div style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.4)', marginTop: '4px' }}>PNG, JPEG, WebP up to 10 MB</div>
+                </div>
+                <input type="file" accept="image/*" onChange={handleFileChange} style={{ display: 'none' }} />
               </label>
             )}
           </div>
 
-          {/* Sampled Color Hex Input & Preset Swatches */}
-          <div className="space-y-2 pt-2">
-            <label className="block text-xs font-semibold text-slate-300">
+          {/* Color Sampling */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <label style={{ fontSize: '0.78rem', fontWeight: 600, color: 'rgba(255, 255, 255, 0.6)' }}>
               Sampled Brand Color Area (Hex Code)
             </label>
-            <div className="flex items-center gap-3">
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
               <input
                 type="color"
                 value={sampledHex}
                 onChange={(e) => setSampledHex(e.target.value)}
-                className="h-9 w-12 rounded-lg bg-slate-950 border border-slate-700 cursor-pointer p-0.5"
+                style={{
+                  width: '42px',
+                  height: '38px',
+                  borderRadius: '10px',
+                  background: '#161616',
+                  border: '1px solid rgba(255, 255, 255, 0.1)',
+                  cursor: 'pointer',
+                  padding: '2px',
+                }}
               />
               <input
                 type="text"
                 value={sampledHex}
                 onChange={(e) => setSampledHex(e.target.value)}
-                placeholder="#4F46E5"
-                className="w-full px-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-xs font-mono text-white focus:outline-none focus:border-indigo-500"
+                placeholder="#FF6500"
+                className="input-dark"
+                style={{ fontFamily: 'monospace' }}
               />
             </div>
 
-            {/* Quick Palette Swatches */}
-            <div className="flex items-center gap-2 pt-1 text-[11px] text-slate-400">
-              <span>Quick Test:</span>
+            {/* Quick Test Swatches */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexWrap: 'wrap', paddingTop: '4px' }}>
+              <span style={{ fontSize: '0.72rem', color: 'rgba(255, 255, 255, 0.4)' }}>Quick Test:</span>
+              <button
+                type="button"
+                onClick={() => setSampledHex('#FF6500')}
+                style={{
+                  padding: '4px 8px',
+                  borderRadius: '6px',
+                  background: '#FF6500',
+                  color: '#fff',
+                  border: 'none',
+                  fontSize: '0.68rem',
+                  fontFamily: 'monospace',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                }}
+              >
+                Orange (#FF6500)
+              </button>
               <button
                 type="button"
                 onClick={() => setSampledHex('#4F46E5')}
-                className="px-2 py-0.5 rounded bg-[#4F46E5] text-white font-mono text-[10px]"
+                style={{
+                  padding: '4px 8px',
+                  borderRadius: '6px',
+                  background: '#4F46E5',
+                  color: '#fff',
+                  border: 'none',
+                  fontSize: '0.68rem',
+                  fontFamily: 'monospace',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                }}
               >
                 Indigo (#4F46E5)
               </button>
               <button
                 type="button"
-                onClick={() => setSampledHex('#06B6D4')}
-                className="px-2 py-0.5 rounded bg-[#06B6D4] text-slate-950 font-mono text-[10px]"
-              >
-                Cyan (#06B6D4)
-              </button>
-              <button
-                type="button"
                 onClick={() => setSampledHex('#EF4444')}
-                className="px-2 py-0.5 rounded bg-[#EF4444] text-white font-mono text-[10px]"
+                style={{
+                  padding: '4px 8px',
+                  borderRadius: '6px',
+                  background: '#EF4444',
+                  color: '#fff',
+                  border: 'none',
+                  fontSize: '0.68rem',
+                  fontFamily: 'monospace',
+                  fontWeight: 700,
+                  cursor: 'pointer',
+                }}
               >
-                Non-Compliant Red (#EF4444)
+                Red Breach (#EF4444)
               </button>
             </div>
           </div>
@@ -166,85 +232,126 @@ export default function ImageReviewPage() {
           <button
             onClick={handleRunReview}
             disabled={analyzing || !file}
-            className="w-full py-2.5 rounded-xl bg-gradient-to-r from-indigo-600 to-cyan-500 hover:from-indigo-500 hover:to-cyan-400 text-white font-semibold text-xs shadow-md shadow-indigo-600/30 flex items-center justify-center gap-2 transition-all disabled:opacity-50"
+            className="btn-orange"
+            style={{ width: '100%', justifyContent: 'center', padding: '12px', marginTop: '6px' }}
           >
-            {analyzing ? 'Analyzing Color Distance & Contrast...' : 'Verify Visual Compliance'}
+            {analyzing ? (
+              <>
+                <span style={{ width: '16px', height: '16px', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', display: 'inline-block' }} className="animate-spin" />
+                Analyzing Color Distance & Contrast...
+              </>
+            ) : (
+              'Verify Visual Compliance'
+            )}
           </button>
         </div>
 
-        {/* Right: Analysis Results */}
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/60 p-5 space-y-4">
-          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400">Palette & Accessibility Analysis</h3>
+        {/* Right Column: Analysis Results */}
+        <div className="card" style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '18px' }}>
+          <h3 style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'rgba(255, 255, 255, 0.4)', margin: 0 }}>
+            Palette & Accessibility Analysis
+          </h3>
 
           {!result ? (
-            <div className="py-20 text-center text-xs text-slate-500">
+            <div style={{ padding: '80px 20px', textAlign: 'center', fontSize: '0.82rem', color: 'rgba(255, 255, 255, 0.35)' }}>
               Upload an image and run verification to inspect color fidelity and WCAG contrast.
             </div>
           ) : (
-            <div className="space-y-4 text-xs">
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', fontSize: '0.82rem' }}>
               {/* Compliance Header */}
-              <div className={`p-3.5 rounded-xl border flex items-center justify-between ${
-                result.is_palette_compliant
-                  ? 'bg-emerald-950/40 border-emerald-800/60 text-emerald-300'
-                  : 'bg-rose-950/40 border-rose-800/60 text-rose-300'
-              }`}>
-                <div className="flex items-center gap-2 font-semibold">
+              <div style={{
+                padding: '14px 16px',
+                borderRadius: '12px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                background: result.is_palette_compliant ? 'rgba(16, 185, 129, 0.12)' : 'rgba(239, 68, 68, 0.12)',
+                border: result.is_palette_compliant ? '1px solid rgba(16, 185, 129, 0.3)' : '1px solid rgba(239, 68, 68, 0.3)',
+                color: result.is_palette_compliant ? '#34d399' : '#f87171',
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontWeight: 700 }}>
                   {result.is_palette_compliant ? (
-                    <CheckCircle2 className="h-5 w-5 text-emerald-400" />
+                    <CheckCircle2 size={18} color="#34d399" />
                   ) : (
-                    <AlertOctagon className="h-5 w-5 text-rose-400" />
+                    <AlertOctagon size={18} color="#f87171" />
                   )}
                   <span>
-                    {result.is_palette_compliant ? 'Brand Color Palette Compliant' : 'Color Variance Beyond Brand Tolerance'}
+                    {result.is_palette_compliant ? 'Brand Color Palette Compliant' : 'Color Variance Beyond Tolerance'}
                   </span>
                 </div>
-                <span className="font-mono text-xs">
+                <span style={{ fontFamily: 'monospace', fontWeight: 700 }}>
                   Delta: {result.difference_score}%
                 </span>
               </div>
 
               {/* Matched Approved Color */}
-              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
-                <span className="text-[11px] text-slate-400 block font-medium">Closest Approved Brand Asset:</span>
-                <div className="flex items-center justify-between font-mono">
-                  <span className="text-white font-bold">{result.closest_approved_color}</span>
-                  <span className="text-cyan-400">{result.closest_approved_hex}</span>
+              <div style={{
+                padding: '14px 16px',
+                borderRadius: '12px',
+                background: 'rgba(0, 0, 0, 0.25)',
+                border: '1px solid rgba(255, 255, 255, 0.05)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+              }}>
+                <span style={{ fontSize: '0.78rem', color: 'rgba(255, 255, 255, 0.5)' }}>Closest Approved Brand Asset:</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontFamily: 'monospace' }}>
+                  <strong style={{ color: '#fff' }}>{result.closest_approved_color}</strong>
+                  <span style={{ color: '#FF8533' }}>{result.closest_approved_hex}</span>
                 </div>
               </div>
 
               {/* WCAG 2.2 AA Contrast */}
-              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-2">
-                <span className="text-[11px] text-slate-400 block font-medium">
+              <div style={{
+                padding: '14px 16px',
+                borderRadius: '12px',
+                background: 'rgba(0, 0, 0, 0.25)',
+                border: '1px solid rgba(255, 255, 255, 0.05)',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '10px',
+              }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'rgba(255, 255, 255, 0.5)' }}>
                   WCAG 2.2 Accessibility Contrast Ratios:
                 </span>
-                <div className="grid grid-cols-2 gap-2 text-center font-mono">
-                  <div className="p-2 rounded bg-slate-900 border border-slate-800">
-                    <div className="text-sm font-bold text-slate-200">{result.wcag_contrast?.against_white}:1</div>
-                    <span className="text-[10px] text-slate-400">vs. White Surface</span>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '10px', textAlign: 'center', fontFamily: 'monospace' }}>
+                  <div style={{ padding: '10px', borderRadius: '8px', background: '#111', border: '1px solid rgba(255, 255, 255, 0.04)' }}>
+                    <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff' }}>{result.wcag_contrast?.against_white}:1</div>
+                    <span style={{ fontSize: '0.68rem', color: 'rgba(255, 255, 255, 0.4)' }}>vs. White Surface</span>
                   </div>
-                  <div className="p-2 rounded bg-slate-900 border border-slate-800">
-                    <div className="text-sm font-bold text-slate-200">{result.wcag_contrast?.against_dark}:1</div>
-                    <span className="text-[10px] text-slate-400">vs. Navy Surface</span>
+                  <div style={{ padding: '10px', borderRadius: '8px', background: '#111', border: '1px solid rgba(255, 255, 255, 0.04)' }}>
+                    <div style={{ fontSize: '1.1rem', fontWeight: 800, color: '#fff' }}>{result.wcag_contrast?.against_dark}:1</div>
+                    <span style={{ fontSize: '0.68rem', color: 'rgba(255, 255, 255, 0.4)' }}>vs. Dark Surface</span>
                   </div>
                 </div>
-                <p className="text-[11px] text-slate-400">
+                <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.5)', margin: 0, lineHeight: '1.4' }}>
                   {result.wcag_contrast?.passes_aa_normal_text
-                    ? '✓ Passes WCAG 2.2 Level AA requirement (≥ 4.5:1) for body text.'
+                    ? '✓ Passes WCAG 2.2 Level AA requirement (≥ 4.5:1) for standard text.'
                     : '⚠ Requires high-contrast background to pass WCAG 2.2 Level AA.'}
                 </p>
               </div>
 
-              {/* Manual Review Prompts (Round 1 boundary requirement) */}
-              <div className="p-3 rounded-xl bg-indigo-950/20 border border-indigo-900/40 space-y-1.5">
-                <span className="text-[11px] font-semibold text-cyan-300 block">
-                  Manual Review Prompts (Round 1 & 2 boundary):
-                </span>
-                <ul className="list-disc list-inside space-y-1 text-slate-300 text-[11px]">
-                  {result.manual_review_prompts?.map((prompt, i) => (
-                    <li key={i}>{prompt}</li>
-                  ))}
-                </ul>
-              </div>
+              {/* Manual Review Prompts */}
+              {result.manual_review_prompts?.length > 0 && (
+                <div style={{
+                  padding: '14px 16px',
+                  borderRadius: '12px',
+                  background: 'rgba(255, 101, 0, 0.05)',
+                  border: '1px solid rgba(255, 101, 0, 0.2)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '8px',
+                }}>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 700, color: '#FF8533' }}>
+                    Brand Guidelines Compliance Prompts:
+                  </span>
+                  <ul style={{ margin: 0, paddingLeft: '18px', color: 'rgba(255, 255, 255, 0.7)', fontSize: '0.78rem', lineHeight: '1.5' }}>
+                    {result.manual_review_prompts.map((prompt, i) => (
+                      <li key={i}>{prompt}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           )}
         </div>

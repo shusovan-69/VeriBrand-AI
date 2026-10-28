@@ -33,7 +33,6 @@ export default function ContentSubmissionPage() {
   const [error, setError] = useState('');
 
   useEffect(() => {
-    // Fetch approved products list
     guidelinesApi.getFacts().then((res) => {
       const prods = Array.from(new Set(res.data.map((f) => f.product_name))).filter(Boolean);
       setApprovedProducts(prods.length ? prods : ['Example Wireless Headphones']);
@@ -75,7 +74,6 @@ export default function ContentSubmissionPage() {
     }
   };
 
-  // Demo Presets
   const loadPreset = (type) => {
     setError('');
     if (type === 'section7') {
@@ -104,7 +102,6 @@ export default function ContentSubmissionPage() {
     setError('');
 
     try {
-      // 1. Create Draft & Revision 1
       const draftRes = await draftsApi.createDraft({
         title: title || 'Marketing Copy Submission',
         target_product: targetProduct,
@@ -115,11 +112,7 @@ export default function ContentSubmissionPage() {
       });
 
       const draftId = draftRes.data.draft_id;
-
-      // 2. Trigger Verification Engine
       await verificationApi.verifyDraft(draftId);
-
-      // 3. Navigate directly to draft verification results
       navigate(`/drafts/${draftId}`);
     } catch (err) {
       setError(err.response?.data?.detail || 'Failed to submit and verify draft.');
@@ -131,140 +124,236 @@ export default function ContentSubmissionPage() {
   const isOverLimit = charCount > 10000;
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div style={{ maxWidth: '880px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '24px' }}>
       {/* Header */}
-      <div className="pb-4 border-b border-slate-800">
-        <h1 className="text-2xl font-bold tracking-tight text-white flex items-center gap-2.5">
-          <FileText className="h-6 w-6 text-cyan-400" />
+      <div style={{ paddingBottom: '18px', borderBottom: '1px solid rgba(255, 255, 255, 0.06)' }}>
+        <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#fff', display: 'flex', alignItems: 'center', gap: '10px', margin: 0 }}>
+          <FileText size={24} color="#FF6500" />
           Submit Content for Brand Verification
         </h1>
-        <p className="text-xs text-slate-400 mt-1">
-          Paste marketing copy or extract text from a campaign PDF. Our hybrid engine will check against approved specifications.
+        <p style={{ fontSize: '0.82rem', color: 'rgba(255, 255, 255, 0.45)', marginTop: '6px' }}>
+          Paste marketing copy or extract text from a campaign PDF. Our hybrid engine will check claims against approved specifications.
         </p>
       </div>
 
-      {/* Preset Quick Load Bar for Hackathon Evaluation */}
-      <div className="rounded-xl border border-indigo-900/50 bg-indigo-950/20 p-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-2 text-indigo-300 text-xs font-semibold">
-            <Sparkles className="h-4 w-4 text-cyan-400" />
-            <span>Load Evaluation Draft Scenarios:</span>
+      {/* Preset Evaluation Scenarios */}
+      <div style={{
+        background: 'rgba(255, 101, 0, 0.05)',
+        border: '1px solid rgba(255, 101, 0, 0.2)',
+        borderRadius: '16px',
+        padding: '16px 20px',
+      }}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '12px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#FF8533', fontSize: '0.78rem', fontWeight: 700 }}>
+            <Sparkles size={15} color="#FF6500" />
+            <span>Load Sample Content Presets:</span>
           </div>
-          <div className="flex flex-wrap gap-2">
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
             <button
               type="button"
               onClick={() => loadPreset('section7')}
-              className="px-2.5 py-1 rounded-lg bg-rose-950/70 hover:bg-rose-900/80 border border-rose-800/60 text-rose-200 text-xs font-mono font-medium transition-all"
+              style={{
+                padding: '6px 12px',
+                borderRadius: '8px',
+                background: 'rgba(239, 68, 68, 0.12)',
+                border: '1px solid rgba(239, 68, 68, 0.3)',
+                color: '#f87171',
+                fontSize: '0.72rem',
+                fontFamily: 'monospace',
+                fontWeight: 600,
+                cursor: 'pointer',
+              }}
             >
-              Section 7 Demo (24-hr Contradiction)
+              Battery Claim (Contradiction Sample)
             </button>
             <button
               type="button"
               onClick={() => loadPreset('compliant')}
-              className="px-2.5 py-1 rounded-lg bg-emerald-950/70 hover:bg-emerald-900/80 border border-emerald-800/60 text-emerald-200 text-xs font-mono font-medium transition-all"
+              style={{
+                padding: '6px 12px',
+                borderRadius: '8px',
+                background: 'rgba(16, 185, 129, 0.12)',
+                border: '1px solid rgba(16, 185, 129, 0.3)',
+                color: '#34d399',
+                fontSize: '0.72rem',
+                fontFamily: 'monospace',
+                fontWeight: 600,
+                cursor: 'pointer',
+              }}
             >
-              Compliant Draft (12-hr Fact Match)
+              Compliant Campaign Copy
             </button>
             <button
               type="button"
               onClick={() => loadPreset('insufficient')}
-              className="px-2.5 py-1 rounded-lg bg-amber-950/70 hover:bg-amber-900/80 border border-amber-800/60 text-amber-200 text-xs font-mono font-medium transition-all"
+              style={{
+                padding: '6px 12px',
+                borderRadius: '8px',
+                background: 'rgba(245, 158, 11, 0.12)',
+                border: '1px solid rgba(245, 158, 11, 0.3)',
+                color: '#fbbf24',
+                fontSize: '0.72rem',
+                fontFamily: 'monospace',
+                fontWeight: 600,
+                cursor: 'pointer',
+              }}
             >
-              Insufficient Evidence Test
+              Unsubstantiated Claims Sample
             </button>
           </div>
         </div>
       </div>
 
       {error && (
-        <div className="rounded-xl bg-rose-950/60 border border-rose-800 p-4 text-xs text-rose-300 flex items-start gap-2.5">
-          <AlertCircle className="h-4 w-4 shrink-0 text-rose-400 mt-0.5" />
+        <div style={{
+          display: 'flex',
+          alignItems: 'flex-start',
+          gap: '10px',
+          padding: '12px 16px',
+          borderRadius: '12px',
+          background: 'rgba(239, 68, 68, 0.08)',
+          border: '1px solid rgba(239, 68, 68, 0.25)',
+          color: '#f87171',
+          fontSize: '0.82rem',
+        }}>
+          <AlertCircle size={16} color="#f87171" style={{ flexShrink: 0, marginTop: '2px' }} />
           <span>{error}</span>
         </div>
       )}
 
-      {/* Main Submission Form */}
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="sm:col-span-2">
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Draft Title</label>
+      {/* Main Form */}
+      <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px' }}>
+          <div>
+            <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: 'rgba(255, 255, 255, 0.6)', marginBottom: '8px' }}>
+              Draft Title
+            </label>
             <input
               type="text"
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Q4 Wireless Headphones Campaign Copy"
-              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500"
+              className="input-dark"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-300 mb-1.5">Target Product</label>
+            <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: 'rgba(255, 255, 255, 0.6)', marginBottom: '8px' }}>
+              Target Product
+            </label>
             <select
               value={targetProduct}
               onChange={(e) => setTargetProduct(e.target.value)}
-              className="w-full px-3.5 py-2.5 rounded-xl bg-slate-900 border border-slate-800 text-sm text-white focus:outline-none focus:border-indigo-500"
+              className="input-dark"
+              style={{ cursor: 'pointer' }}
             >
               {approvedProducts.map((p) => (
-                <option key={p} value={p}>{p}</option>
+                <option key={p} value={p} style={{ background: '#161616', color: '#fff' }}>{p}</option>
               ))}
-              <option value="General Brand Copy">General Brand Copy</option>
+              <option value="General Brand Copy" style={{ background: '#161616', color: '#fff' }}>General Brand Copy</option>
             </select>
           </div>
         </div>
 
         {/* PDF Extraction Upload Zone */}
-        <div className="rounded-2xl border border-dashed border-slate-800 bg-slate-900/40 p-5 hover:border-slate-700 transition-colors">
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-xl bg-slate-800 flex items-center justify-center text-indigo-400 shrink-0">
-                <Upload className="h-5 w-5" />
+        <div className="card" style={{ padding: '22px' }}>
+          <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', justifyContent: 'space-between', gap: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <div style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '12px',
+                background: 'rgba(255, 101, 0, 0.12)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                flexShrink: 0
+              }}>
+                <Upload size={18} color="#FF6500" />
               </div>
               <div>
-                <h4 className="text-xs font-bold text-white">Extract from Text-Extractable PDF</h4>
-                <p className="text-[11px] text-slate-400">
+                <h4 style={{ fontSize: '0.85rem', fontWeight: 700, color: '#fff', margin: 0 }}>
+                  Extract from Text-Extractable PDF
+                </h4>
+                <p style={{ fontSize: '0.75rem', color: 'rgba(255, 255, 255, 0.4)', margin: '3px 0 0 0' }}>
                   PyMuPDF extractor · Max 10 MB / 20 pages · Text confirmation required
                 </p>
               </div>
             </div>
 
-            <div>
-              <label className="cursor-pointer inline-flex items-center gap-2 px-3.5 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-medium text-slate-200 transition-colors">
-                <span>{extracting ? 'Extracting Text...' : 'Select PDF Document'}</span>
-                <input
-                  type="file"
-                  accept=".pdf"
-                  onChange={handlePdfUpload}
-                  disabled={extracting}
-                  className="hidden"
-                />
-              </label>
-            </div>
+            <label style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '9px 16px',
+              borderRadius: '10px',
+              background: 'rgba(255, 255, 255, 0.05)',
+              border: '1px solid rgba(255, 255, 255, 0.1)',
+              color: '#fff',
+              fontSize: '0.78rem',
+              fontWeight: 600,
+              cursor: 'pointer',
+              transition: 'all 0.2s',
+            }}>
+              <span>{extracting ? 'Extracting Text...' : 'Select PDF Document'}</span>
+              <input
+                type="file"
+                accept=".pdf"
+                onChange={handlePdfUpload}
+                disabled={extracting}
+                style={{ display: 'none' }}
+              />
+            </label>
           </div>
 
           {pdfError && (
-            <div className="mt-3 text-xs text-rose-400 bg-rose-950/40 p-2.5 rounded-lg border border-rose-900/50">
+            <div style={{
+              marginTop: '14px',
+              padding: '10px 14px',
+              borderRadius: '10px',
+              background: 'rgba(239, 68, 68, 0.1)',
+              border: '1px solid rgba(239, 68, 68, 0.25)',
+              color: '#f87171',
+              fontSize: '0.78rem',
+            }}>
               {pdfError}
             </div>
           )}
 
-          {/* Extracted Text Preview Confirmation (Round 1 Requirement) */}
           {pdfResult && (
-            <div className="mt-4 p-4 rounded-xl bg-slate-950 border border-indigo-900/50">
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-bold text-cyan-300 flex items-center gap-1.5">
-                  <FileCheck className="h-4 w-4" />
+            <div style={{
+              marginTop: '16px',
+              padding: '16px',
+              borderRadius: '12px',
+              background: '#0d0d0d',
+              border: '1px solid rgba(255, 101, 0, 0.3)',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '10px' }}>
+                <span style={{ fontSize: '0.78rem', fontWeight: 700, color: '#FF8533', display: 'flex', alignItems: 'center', gap: '6px' }}>
+                  <FileCheck size={16} />
                   PDF Text Extracted ({pdfResult.character_count} chars, {pdfResult.page_count} pages)
                 </span>
                 <button
                   type="button"
                   onClick={handleApplyExtractedText}
-                  className="px-3 py-1 rounded bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-sm transition-all"
+                  className="btn-orange"
+                  style={{ padding: '6px 12px', fontSize: '0.75rem' }}
                 >
                   Confirm & Insert into Editor
                 </button>
               </div>
-              <div className="max-h-36 overflow-y-auto text-xs text-slate-300 font-mono bg-slate-900/80 p-2.5 rounded border border-slate-800">
+              <div style={{
+                maxHeight: '140px',
+                overflowY: 'auto',
+                fontSize: '0.78rem',
+                fontFamily: 'monospace',
+                color: 'rgba(255, 255, 255, 0.75)',
+                background: '#141414',
+                padding: '12px',
+                borderRadius: '8px',
+                border: '1px solid rgba(255, 255, 255, 0.05)',
+              }}>
                 {pdfResult.extracted_text}
               </div>
             </div>
@@ -273,11 +362,16 @@ export default function ContentSubmissionPage() {
 
         {/* Marketing Text Editor */}
         <div>
-          <div className="flex items-center justify-between mb-1.5">
-            <label className="text-xs font-semibold text-slate-300">
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+            <label style={{ fontSize: '0.78rem', fontWeight: 600, color: 'rgba(255, 255, 255, 0.6)' }}>
               Marketing Copy / Content Body
             </label>
-            <div className={`text-xs font-mono ${isOverLimit ? 'text-rose-400 font-bold' : 'text-slate-400'}`}>
+            <div style={{
+              fontSize: '0.75rem',
+              fontFamily: 'monospace',
+              color: isOverLimit ? '#f87171' : 'rgba(255, 255, 255, 0.35)',
+              fontWeight: isOverLimit ? 700 : 400
+            }}>
               {charCount.toLocaleString()} / 10,000 characters
             </div>
           </div>
@@ -288,31 +382,37 @@ export default function ContentSubmissionPage() {
             value={contentText}
             onChange={(e) => setContentText(e.target.value)}
             placeholder="Type or paste your marketing content here... e.g. 'Our headphones deliver guaranteed 24-hour battery life.'"
-            className="w-full p-4 rounded-2xl bg-slate-900 border border-slate-800 text-sm text-slate-100 placeholder-slate-500 font-mono leading-relaxed focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+            className="input-dark"
+            style={{
+              fontFamily: 'monospace',
+              lineHeight: '1.6',
+              resize: 'vertical',
+            }}
           />
 
           {isOverLimit && (
-            <p className="mt-1 text-xs text-rose-400">
+            <p style={{ marginTop: '6px', fontSize: '0.75rem', color: '#f87171' }}>
               Operating limit exceeded: Maximum 10,000 characters permitted per analysis.
             </p>
           )}
         </div>
 
         {/* Submit Button */}
-        <div className="flex items-center justify-end gap-4 pt-4 border-t border-slate-800">
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-end', paddingTop: '16px', borderTop: '1px solid rgba(255, 255, 255, 0.06)' }}>
           <button
             type="submit"
             disabled={submitting || isOverLimit}
-            className="px-6 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-cyan-500 hover:from-indigo-500 hover:to-cyan-400 text-white font-semibold text-sm shadow-lg shadow-indigo-600/30 flex items-center gap-2 transition-all disabled:opacity-50"
+            className="btn-orange"
+            style={{ padding: '12px 28px', fontSize: '0.9rem' }}
           >
             {submitting ? (
               <>
-                <span className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <span style={{ width: '16px', height: '16px', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', display: 'inline-block' }} className="animate-spin" />
                 Running Verification Engine...
               </>
             ) : (
               <>
-                <Send className="h-4 w-4" />
+                <Send size={15} />
                 Submit for Verification
               </>
             )}

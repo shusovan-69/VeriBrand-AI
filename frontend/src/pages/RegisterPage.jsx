@@ -35,67 +35,126 @@ export default function RegisterPage() {
     }
   };
 
-  return (
-    <div className="min-h-screen bg-slate-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
-        <Link to="/" className="inline-flex items-center gap-2 group mb-4">
-          <div className="h-10 w-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-cyan-400 p-0.5 shadow-lg shadow-indigo-500/20">
-            <div className="h-full w-full bg-slate-950 rounded-[10px] flex items-center justify-center">
-              <Shield className="h-5 w-5 text-cyan-400" />
-            </div>
-          </div>
-          <span className="text-xl font-bold font-mono text-white">VeriBrand<span className="text-cyan-400">.AI</span></span>
-        </Link>
-        <h2 className="text-2xl font-bold tracking-tight text-white">Register Brand Workspace</h2>
-        <p className="mt-1 text-xs text-slate-400">
-          Setup an isolated workspace and configure role-based permissions
-        </p>
-      </div>
+  const roles = [
+    { key: 'creator', label: 'Creator', desc: 'Draft campaigns & verify claims', color: '#FF8533' },
+    { key: 'reviewer', label: 'Reviewer', desc: 'Audit evidence & approve drafts', color: '#34d399' },
+    { key: 'admin', label: 'Admin', desc: 'Set guidelines & ground truth', color: '#a78bfa' },
+  ];
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md px-4 sm:px-0">
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/80 backdrop-blur-xl p-6 sm:p-8 shadow-2xl">
+  return (
+    <div style={{
+      minHeight: '100vh',
+      background: '#0a0a0a',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '40px 20px',
+      position: 'relative',
+      overflow: 'hidden',
+    }}>
+      {/* Background Glow */}
+      <div style={{
+        position: 'absolute',
+        top: '-200px',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: '800px',
+        height: '800px',
+        borderRadius: '50%',
+        background: 'radial-gradient(circle, rgba(255,101,0,0.07) 0%, transparent 65%)',
+        pointerEvents: 'none',
+      }} />
+
+      {/* Brand Header */}
+      <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '10px', textDecoration: 'none', marginBottom: '28px' }}>
+        <div style={{
+          width: '40px',
+          height: '40px',
+          borderRadius: '12px',
+          background: 'linear-gradient(135deg, #FF6500, #FF9A00)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          boxShadow: '0 0 24px rgba(255,101,0,0.4)',
+        }}>
+          <Shield size={20} color="#fff" />
+        </div>
+        <span style={{ fontSize: '1.2rem', fontWeight: 700, color: '#fff' }}>
+          VeriBrand<span style={{ color: '#FF6500' }}>.AI</span>
+        </span>
+      </Link>
+
+      <div style={{ width: '100%', maxWidth: '480px', position: 'relative', zIndex: 1 }}>
+        <div style={{ textAlign: 'center', marginBottom: '24px' }}>
+          <h1 style={{ fontSize: '1.6rem', fontWeight: 800, color: '#fff', marginBottom: '6px' }}>
+            Register Brand Workspace
+          </h1>
+          <p style={{ fontSize: '0.85rem', color: 'rgba(255,255,255,0.45)' }}>
+            Setup an isolated workspace with AI-verified brand governance
+          </p>
+        </div>
+
+        <div className="card" style={{ padding: '30px' }}>
           {error && (
-            <div className="mb-5 rounded-lg bg-rose-950/60 border border-rose-800 p-3 text-xs text-rose-300 flex items-start gap-2">
-              <AlertCircle className="h-4 w-4 shrink-0 mt-0.5 text-rose-400" />
-              <span>{error}</span>
+            <div style={{
+              display: 'flex',
+              alignItems: 'flex-start',
+              gap: '10px',
+              padding: '12px 14px',
+              borderRadius: '12px',
+              background: 'rgba(239,68,68,0.08)',
+              border: '1px solid rgba(239,68,68,0.25)',
+              marginBottom: '20px',
+            }}>
+              <AlertCircle size={16} color="#fca5a5" style={{ flexShrink: 0, marginTop: '1px' }} />
+              <span style={{ fontSize: '0.82rem', color: '#fca5a5' }}>{error}</span>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">Full Name</label>
-              <div className="relative">
-                <User className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
+              <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: 'rgba(255,255,255,0.6)', marginBottom: '7px' }}>
+                Full Name
+              </label>
+              <div style={{ position: 'relative' }}>
+                <User size={15} color="rgba(255,255,255,0.25)" style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }} />
                 <input
                   type="text"
                   required
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   placeholder="e.g. Alex Rivera"
-                  className="w-full pl-9 pr-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                  className="input-dark"
+                  style={{ paddingLeft: '40px' }}
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">Email address</label>
-              <div className="relative">
-                <Mail className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
+              <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: 'rgba(255,255,255,0.6)', marginBottom: '7px' }}>
+                Work Email
+              </label>
+              <div style={{ position: 'relative' }}>
+                <Mail size={15} color="rgba(255,255,255,0.25)" style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }} />
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="name@company.com"
-                  className="w-full pl-9 pr-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                  placeholder="alex@company.com"
+                  className="input-dark"
+                  style={{ paddingLeft: '40px' }}
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">Password</label>
-              <div className="relative">
-                <Lock className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
+              <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: 'rgba(255,255,255,0.6)', marginBottom: '7px' }}>
+                Password
+              </label>
+              <div style={{ position: 'relative' }}>
+                <Lock size={15} color="rgba(255,255,255,0.25)" style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }} />
                 <input
                   type="password"
                   required
@@ -103,47 +162,63 @@ export default function RegisterPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Minimum 6 characters"
-                  className="w-full pl-9 pr-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                  className="input-dark"
+                  style={{ paddingLeft: '40px' }}
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">Account Role</label>
-              <div className="grid grid-cols-3 gap-2">
-                {['admin', 'creator', 'reviewer'].map((r) => (
-                  <button
-                    key={r}
-                    type="button"
-                    onClick={() => setRole(r)}
-                    className={`py-2 px-3 text-xs font-semibold rounded-lg border capitalize transition-all ${
-                      role === r
-                        ? 'bg-indigo-600 text-white border-indigo-500 shadow-sm'
-                        : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-white'
-                    }`}
-                  >
-                    {r}
-                  </button>
-                ))}
+              <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: 'rgba(255,255,255,0.6)', marginBottom: '8px' }}>
+                Assign Initial Role
+              </label>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px' }}>
+                {roles.map((r) => {
+                  const isSel = role === r.key;
+                  return (
+                    <button
+                      key={r.key}
+                      type="button"
+                      onClick={() => setRole(r.key)}
+                      style={{
+                        padding: '10px 8px',
+                        borderRadius: '12px',
+                        border: isSel ? `1px solid ${r.color}` : '1px solid rgba(255,255,255,0.06)',
+                        background: isSel ? `${r.color}15` : 'rgba(255,255,255,0.02)',
+                        color: isSel ? r.color : 'rgba(255,255,255,0.5)',
+                        cursor: 'pointer',
+                        textAlign: 'center',
+                        transition: 'all 0.2s',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        gap: '3px',
+                      }}
+                    >
+                      <span style={{ fontSize: '0.82rem', fontWeight: 700 }}>{r.label}</span>
+                      <span style={{ fontSize: '0.62rem', color: isSel ? r.color : 'rgba(255,255,255,0.3)', lineHeight: '1.2' }}>
+                        {r.desc}
+                      </span>
+                    </button>
+                  );
+                })}
               </div>
-              <p className="mt-1 text-[11px] text-slate-500">
-                {role === 'admin' && 'Admin: Can configure brand rules and verified product specifications.'}
-                {role === 'creator' && 'Creator: Can submit drafts and PDF campaigns (cannot self-approve).'}
-                {role === 'reviewer' && 'Reviewer: Can audit evidence, resolve findings, and approve content.'}
-              </p>
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1.5">Workspace Brand Name</label>
-              <div className="relative">
-                <Building2 className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
+              <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 600, color: 'rgba(255,255,255,0.6)', marginBottom: '7px' }}>
+                Workspace Brand Name
+              </label>
+              <div style={{ position: 'relative' }}>
+                <Building2 size={15} color="rgba(255,255,255,0.25)" style={{ position: 'absolute', left: '14px', top: '50%', transform: 'translateY(-50%)' }} />
                 <input
                   type="text"
                   required
                   value={workspaceName}
                   onChange={(e) => setWorkspaceName(e.target.value)}
-                  placeholder="e.g. Acme Audio & Tech"
-                  className="w-full pl-9 pr-3 py-2 rounded-lg bg-slate-950 border border-slate-700 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500"
+                  placeholder="e.g. Acme Audio and Tech"
+                  className="input-dark"
+                  style={{ paddingLeft: '40px' }}
                 />
               </div>
             </div>
@@ -151,28 +226,28 @@ export default function RegisterPage() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-2.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-sm shadow-md shadow-indigo-600/30 flex items-center justify-center gap-2 transition-all disabled:opacity-50 mt-2"
+              className="btn-orange"
+              style={{ width: '100%', justifyContent: 'center', padding: '12px', marginTop: '6px' }}
             >
               {loading ? (
-                <span className="flex items-center gap-2">
-                  <span className="h-4 w-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                <>
+                  <span style={{ width: '16px', height: '16px', border: '2px solid rgba(255,255,255,0.3)', borderTopColor: '#fff', borderRadius: '50%', display: 'inline-block' }} className="animate-spin" />
                   Creating Workspace...
-                </span>
+                </>
               ) : (
                 <>
-                  Register & Open Workspace
-                  <ArrowRight className="h-4 w-4" />
+                  Register & Open Workspace <ArrowRight size={16} />
                 </>
               )}
             </button>
           </form>
 
-          <div className="mt-6 text-center text-xs text-slate-400">
+          <p style={{ textAlign: 'center', fontSize: '0.8rem', color: 'rgba(255,255,255,0.4)', marginTop: '22px' }}>
             Already registered?{' '}
-            <Link to="/login" className="text-cyan-400 hover:text-cyan-300 font-semibold">
+            <Link to="/login" style={{ color: '#FF8533', fontWeight: 600, textDecoration: 'none' }}>
               Sign in to your account
             </Link>
-          </div>
+          </p>
         </div>
       </div>
     </div>
